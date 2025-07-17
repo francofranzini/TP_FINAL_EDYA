@@ -1,30 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "parser.h"
+#include "funciones.h"
 
 
-void procesar_operacion(enum Operacion operacion, char buffer[]){
-  switch(operacion) {
-    case DEFL:
-      // Aquí iría la lógica para definir una lista
-      break;
-    case DEFF:
-      // Aquí iría la lógica para definir una función
-      break;
-    case APPLY:
-      // Aquí iría la lógica para aplicar una expresión
-      break;
-    case SEARCH:
-      // Aquí iría la lógica para buscar una expresión
-      break;
-  }
-}
 
-
-void iniciar_programa() {
+void iniciar_programa(HashTable* variables) {
     printf("Bienvenido al programa de funciones de lista.\n");
     //Inicializar variables o estructuras necesarias
-    
     enum Operacion operacion = DEFL;
     /* ejecutando:
         DEFF. Definiendo funciones de lista
@@ -38,16 +21,17 @@ void iniciar_programa() {
     while(operacion != FINISH){
       switch(operacion) {
         case DEFL:
-          
+          printf("Definiendo lista...\n");
+          definir_lista(buffer, variables);
           break;
         case DEFF:
-          
+          //definir_funciones_lista(buffer, variables);
           break;
         case APPLY:
-          
+          //aplicar_funciones_lista(buffer, variables);
           break;
         case SEARCH:
-          
+          //buscar_funciones_lista(buffer, variables);
           break;
       }
       operacion = recibir_input(buffer);
@@ -57,8 +41,11 @@ void iniciar_programa() {
 
 
 int main(){
+  HashTable* variables;
 
-  iniciar_programa();
+  //inicializar_variables(variables);
+  iniciar_programa(variables);
+  //liberar_variables(variables);
 
   return 0;
 }

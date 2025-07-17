@@ -1,5 +1,5 @@
 #include "hash_table.h"
-
+#include "./DList/slist.h"
 
 unsigned KRHash(char* key) {
     unsigned hashval;
@@ -16,14 +16,12 @@ HashTable* crear_tabla_hash(){
     printf("Error al crear la tabla hash.\n");
     return NULL;
   }
-
   table->size = 101;
   table->count = 0;
   table->load_factor = 0;
+  table->destruir_dato = dlist_destruir;
   table->hash_function = KRHash;
-  table->destuir_dato = destruir_lista; 
-  table->buckets = malloc(table->size * sizeof(HashEntry*));
-  
+  table->buckets = malloc(table->size * sizeof(HashEntry));
   if (!table->buckets) {
     printf("Error al crear los buckets de la tabla hash.\n");
     free(table);
