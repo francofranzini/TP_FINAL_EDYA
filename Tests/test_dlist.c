@@ -1,4 +1,4 @@
-#include "../DList/dlist.h"
+#include "../src/DList/dlist.h"
 
 void test_dlist_destruir() {
   DList* lista = dlist_crear();
@@ -9,10 +9,22 @@ void test_dlist_destruir() {
   assert(!dlist_vacia(lista));
   
   dlist_destruir(lista);
-
-  assert(lista == NULL);
+  
 }
 
+void test_dlist_crear_y_agregar() {
+  DList* lista = dlist_crear();
+  assert(dlist_vacia(lista));
+  dlist_agregar_final(lista, 42);
+  assert(!dlist_vacia(lista));
+  assert(lista->primero->dato == 42);
+  assert(lista->ultimo->dato == 42);
+  dlist_agregar_final(lista, 84);
+  assert(lista->ultimo->dato == 84);
+  assert(lista->primero->sig->dato == 84);
+  dlist_destruir(lista);
+  assert(lista == NULL);
+}
 int main(){
   test_dlist_destruir();
 

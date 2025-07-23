@@ -24,6 +24,8 @@ typedef enum {
 Operacion recibir_input(char buffer[]);
 
 
+Operacion interpretar_operacion(const char *buffer);
+
 int validar_largo_input(char *buffer);
 
 

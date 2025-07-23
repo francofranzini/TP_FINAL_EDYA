@@ -20,8 +20,10 @@ typedef struct {
 } HashTable;
 
 
-HashTable* crear_tabla_hash();
+unsigned KRHash(char* key);
 
+HashTable* hash_table_crear();
+void hash_table_destruir(HashTable* table);
 HashEntry* hash_entry_crear();
 void hash_entry_destruir(HashEntry* entry);
 

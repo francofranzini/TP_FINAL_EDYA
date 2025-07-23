@@ -9,7 +9,7 @@ unsigned KRHash(char* key) {
 }
 
 
-HashTable* crear_tabla_hash(){
+HashTable* hash_table_crear(){
   HashTable* table = (HashTable*)malloc(sizeof(HashTable));
   assert(table != NULL);
   table->size = 101;
@@ -24,7 +24,7 @@ HashTable* crear_tabla_hash(){
   return table;
 }
 
-HashTable* destruir_tabla_hash(HashTable* table) {
+void hash_table_destruir(HashTable* table) {
   if (table) {
     for (int i = 0; i < table->size; i++) {
       if (table->buckets[i]) hash_entry_destruir(table->buckets[i]);
@@ -32,7 +32,6 @@ HashTable* destruir_tabla_hash(HashTable* table) {
     free(table->buckets);
     free(table);
   }
-  return NULL;
 }
 
 HashEntry* hash_entry_crear(){
