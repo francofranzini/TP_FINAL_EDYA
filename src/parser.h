@@ -5,24 +5,28 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <assert.h>
+#include "hash_table.h"
 
 #define MAX_STEPS 100
 #define MAX_FUNC_NAME 32
 #define MAX_LIST_NAME 32
 
-enum Operacion {
+typedef enum {
   DEFL,
   DEFF,
   APPLY,
   SEARCH,
   FINISH
-};
+} Operacion;
 
 //Lee el input, lo guarda en el buffer y devuelve el tipo de operación
-enum Operacion recibir_input(char buffer[]);
+Operacion recibir_input(char buffer[]);
 
 
 int validar_largo_input(char *buffer);
+
+
 void limpiar_stdin();
 
 // Valida el input considerando que esta definiendo una lista
@@ -35,6 +39,11 @@ void limpiar_stdin();
     - Debe terminar con ';'
 */
 int validar_input_lista(char* buffer);
+
+  // Asignar el nombre de la lista al bucket
+  // y asignar los valores de la lista
+void asignar_input_lista(char* buffer, HashEntry* bucket);
+
 
 
 #endif // __PARSER_H__

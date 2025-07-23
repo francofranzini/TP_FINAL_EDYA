@@ -13,8 +13,7 @@ typedef struct {
 
 typedef struct {
   FuncionHash hash_function;
-  HashEntry* buckets;               // tamaño primo
-  FuncionDestructora destruir_dato; // función para liberar el valor
+  HashEntry** buckets;              // tamaño primo
   int size;                         // número de elementos en la tabla
   int count;                        // número de entradas ocupadas
   float load_factor;                // factor de carga para rehashing
@@ -22,6 +21,9 @@ typedef struct {
 
 
 HashTable* crear_tabla_hash();
+
+HashEntry* hash_entry_crear();
+void hash_entry_destruir(HashEntry* entry);
 
 
 #endif /* __HASH_TABLE_H__ */

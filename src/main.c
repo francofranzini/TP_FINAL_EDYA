@@ -21,7 +21,6 @@ void iniciar_programa(HashTable* variables) {
     while(operacion != FINISH){
       switch(operacion) {
         case DEFL:
-          printf("Definiendo lista...\n");
           definir_lista(buffer, variables);
           break;
         case DEFF:

@@ -1,8 +1,9 @@
-#ifndef __SLIST_H__
-#define __SLIST_H__
+#ifndef __DLIST_H__
+#define __DLIST_H__
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <assert.h>
 
 typedef void (*FuncionVisitante) (int dato);
@@ -53,4 +54,4 @@ void dlist_eliminar_ultimo(DList* lista);
 
 void dlist_eliminar_primero(DList* lista);
 
-#endif /* __SLIST_H__ */
+#endif /* __DLIST_H__ */

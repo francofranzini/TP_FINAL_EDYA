@@ -1,5 +1,4 @@
 #include "hash_table.h"
-#include "./DList/slist.h"
 
 unsigned KRHash(char* key) {
     unsigned hashval;
@@ -12,21 +11,13 @@ unsigned KRHash(char* key) {
 
 HashTable* crear_tabla_hash(){
   HashTable* table = (HashTable*)malloc(sizeof(HashTable));
-  if (!table) {
-    printf("Error al crear la tabla hash.\n");
-    return NULL;
-  }
+  assert(table != NULL);
   table->size = 101;
   table->count = 0;
   table->load_factor = 0;
-  table->destruir_dato = dlist_destruir;
-  table->hash_function = KRHash;
+  table->hash_function = (FuncionHash)KRHash;
   table->buckets = malloc(table->size * sizeof(HashEntry));
-  if (!table->buckets) {
-    printf("Error al crear los buckets de la tabla hash.\n");
-    free(table);
-    return NULL;
-  }
+  assert(table->buckets != NULL);
   for (int i = 0; i < table->size; i++) {
     table->buckets[i] = NULL;
   }
@@ -36,10 +27,7 @@ HashTable* crear_tabla_hash(){
 HashTable* destruir_tabla_hash(HashTable* table) {
   if (table) {
     for (int i = 0; i < table->size; i++) {
-      if (table->buckets[i]) {
-        table->destruir_dato(table->buckets[i]->value);
-        free(table->buckets[i]);
-      }
+      if (table->buckets[i]) hash_entry_destruir(table->buckets[i]);
     }
     free(table->buckets);
     free(table);
@@ -47,3 +35,18 @@ HashTable* destruir_tabla_hash(HashTable* table) {
   return NULL;
 }
 
+HashEntry* hash_entry_crear(){
+  HashEntry* entry = malloc(sizeof(HashEntry));
+  assert(entry != NULL);
+  entry->value = dlist_crear();
+  assert(entry->value != NULL);
+  entry->occupied = 0; // Inicialmente no ocupado
+  return entry;
+}
+
+void hash_entry_destruir(HashEntry* entry) {
+  if (entry) {
+    dlist_destruir(entry->value);
+    free(entry);
+  }
+}

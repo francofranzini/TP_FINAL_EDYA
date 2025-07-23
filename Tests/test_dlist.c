@@ -1,0 +1,21 @@
+#include "../DList/dlist.h"
+
+void test_dlist_destruir() {
+  DList* lista = dlist_crear();
+  dlist_agregar_final(lista, 1);
+  dlist_agregar_final(lista, 2);
+  dlist_agregar_final(lista, 3);
+  
+  assert(!dlist_vacia(lista));
+  
+  dlist_destruir(lista);
+
+  assert(lista == NULL);
+}
+
+int main(){
+  test_dlist_destruir();
+
+
+  return 0;
+}
