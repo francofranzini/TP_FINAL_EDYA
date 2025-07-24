@@ -106,7 +106,7 @@ int validar_input_lista(char* buffer) {
   return 1;
 }
 
-void asignar_input_lista(char* buffer, HashEntry* bucket){
+void asignar_input_lista(char* buffer, Lista* lista){
   char* ptr = buffer;
   while (isspace(*ptr)) ptr++;
 
@@ -116,9 +116,9 @@ void asignar_input_lista(char* buffer, HashEntry* bucket){
   // Copiar el nombre de la lista al bucket
   int i = 0;
   while (isalnum(*ptr) && i < MAX_LIST_NAME - 1) {
-    bucket->key[i++] = *ptr++;
+    lista->nombre[i++] = *ptr++;
   }
-  bucket->key[i] = '\0'; // Terminar la cadena
+  lista->nombre[i] = '\0'; // Terminar la cadena
   // Saltar espacios y '='
   while (isspace(*ptr)) ptr++;
   ptr++;
@@ -126,12 +126,7 @@ void asignar_input_lista(char* buffer, HashEntry* bucket){
   while (isspace(*ptr)) ptr++;
   ptr++; 
   while (isspace(*ptr)) ptr++;
-  //ptr -> primer valor | ']'
-
-
-  // Asignar valores a la lista
-  bucket->value = dlist_crear();
-  assert(bucket->value != NULL);
+  //ptr -> primer valor o ']'
 
 
   while (*ptr != ']' && *ptr != '\0') {
@@ -143,7 +138,7 @@ void asignar_input_lista(char* buffer, HashEntry* bucket){
     }
     value[j] = '\0'; //Terminar la cadena
 
-    dlist_agregar_final(bucket->value, atoi(value)); //Agregar valor a la lista
+    lista_agregar_valor(lista, atoi(value)); //Agregar valor a la lista
 
     while (isspace(*ptr)) ptr++;
     if (*ptr == ',') {

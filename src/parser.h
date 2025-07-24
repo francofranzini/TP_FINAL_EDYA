@@ -6,7 +6,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <assert.h>
-#include "hash_table.h"
+#include "variables.h"
 
 #define MAX_STEPS 100
 #define MAX_FUNC_NAME 32
@@ -44,7 +44,7 @@ int validar_input_lista(char* buffer);
 
   // Asignar el nombre de la lista al bucket
   // y asignar los valores de la lista
-void asignar_input_lista(char* buffer, HashEntry* bucket);
+void asignar_input_lista(char* buffer, Lista* lista);
 
 
 

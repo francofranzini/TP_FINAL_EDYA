@@ -45,16 +45,17 @@ void test_validar_input_lista() {
 }
 
 void test_asignar_input_lista() {
-    HashEntry* bucket = hash_entry_crear();
+    Lista* nueva_lista = lista_crear();
     char input[] = "defl lista = [1, 2, 3];";
-    asignar_input_lista(input, bucket);
+    asignar_input_lista(input, nueva_lista);
 
-    assert(strcmp(bucket->key, "lista") == 0);
-    assert(bucket->value != NULL);
-    assert(!dlist_vacia(bucket->value));
+    
+    assert(strcmp(nueva_lista->nombre, "lista") == 0);
+    assert(nueva_lista->lista != NULL);
+    assert(!dlist_vacia(nueva_lista->lista));
     
     // Verificar los valores en la lista
-    DNodo* nodo = bucket->value->primero;
+    DNodo* nodo = nueva_lista->lista->primero;
     assert(nodo != NULL);
     assert(nodo->dato == 1);
     
@@ -70,7 +71,7 @@ void test_asignar_input_lista() {
     assert(nodo == NULL); // Fin de la lista
     
     
-    hash_entry_destruir(bucket);
+    lista_destruir(nueva_lista);
     
 }
 
