@@ -77,3 +77,17 @@ void lista_agregar_valor(Lista* lista, int value){
   assert(lista != NULL);
   dlist_agregar_final(lista->lista, value);
 }
+
+
+Funciones* funciones_crear(int size){
+  Funciones* funciones = malloc(sizeof(Funciones));
+
+  funciones->hash_function1 = (FuncionHash)KRHash;
+  funciones->hash_function2 = (FuncionHash)Hash2;
+  funciones->size = size;
+  funciones->buckets = malloc(sizeof(Funcion*) * size);
+  funciones->count = 0;
+  funciones->load_factor = 0;
+
+  return funciones;
+}

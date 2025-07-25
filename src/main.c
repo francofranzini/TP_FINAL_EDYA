@@ -5,10 +5,10 @@
 
 
 
-void iniciar_programa(HashTable* variables) {
+void iniciar_programa(Listas* listas, Funciones* funciones) {
     printf("Bienvenido al programa de funciones de lista.\n");
     //Inicializar variables o estructuras necesarias
-    enum Operacion operacion = DEFL;
+    Operacion operacion = DEFL;
     /* ejecutando:
         DEFF. Definiendo funciones de lista
         DEFL. Definiendo listas
@@ -21,10 +21,11 @@ void iniciar_programa(HashTable* variables) {
     while(operacion != FINISH){
       switch(operacion) {
         case DEFL:
-          definir_lista(buffer, variables);
+          definir_lista(buffer, listas);
+          printf("Cantidad de listas definidas: %i\nFactor de carga: %f\n", listas->count, listas->load_factor);
           break;
         case DEFF:
-          //definir_funciones_lista(buffer, variables);
+          // definir_funciones_lista(buffer, funciones);
           break;
         case APPLY:
           //aplicar_funciones_lista(buffer, variables);
@@ -40,11 +41,11 @@ void iniciar_programa(HashTable* variables) {
 
 
 int main(){
-  HashTable* variables;
+  Listas* listas = listas_crear(101);
+  Funciones* funciones = funciones_crear(101);
 
-  //inicializar_variables(variables);
-  iniciar_programa(variables);
-  //liberar_variables(variables);
+  iniciar_programa(listas, funciones);
+  // liberar_variables(listas, funciones);
 
   return 0;
 }

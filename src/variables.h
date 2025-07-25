@@ -12,9 +12,9 @@ typedef struct {
   DList* lista;                  // Lista de valores asociados a la variable
 } Lista;
 
-typedef struct {
+typedef struct _Funcion{
   char nombre[256];          
-  void* funcion;             
+  struct _Funcion* funciones[20];             
 } Funcion;
 
 typedef struct {
@@ -26,7 +26,7 @@ typedef struct {
 } Listas;
 
 typedef struct {
-  FuncionHash hash_function;
+  FuncionHash hash_function1, hash_function2;
   Funcion** buckets;              // tamaño primo
   int size;                         // número de elementos en la tabla
   int count;                        // número de entradas ocupadas
@@ -40,6 +40,7 @@ unsigned KRHash(char* key);
 Listas* listas_crear();
 void listas_destruir(Listas* listas);
 
+Funciones* funciones_crear();
 
 
 Lista* lista_crear();
