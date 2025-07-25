@@ -72,6 +72,14 @@ void test_asignar_input_lista() {
     
     
     lista_destruir(nueva_lista);
+
+
+
+    nueva_lista = lista_crear();
+    strcpy(input, "defl L1 = [];");
+    asignar_input_lista(input, nueva_lista);
+    assert(strcmp(nueva_lista->nombre, "L1") == 0);
+    assert(nueva_lista->lista != NULL);
     
 }
 

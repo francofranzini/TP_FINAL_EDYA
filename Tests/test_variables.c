@@ -14,11 +14,7 @@ void test_lista_crear_y_agregar() {
     lista_agregar_valor(l, 20);
     lista_agregar_valor(l, 30);
 
-    assert(!dlist_vacia(l->lista));
-    dlist_eliminar_primero(l->lista);
-    dlist_eliminar_primero(l->lista);
-    dlist_eliminar_primero(l->lista);
-    assert(dlist_vacia(l->lista));
+    assert(l->lista->primero->sig->sig->dato == 30);
 
     lista_destruir(l);
 }
@@ -45,7 +41,6 @@ void test_listas_agregar_y_buscar() {
     unsigned idx = (k1 + i*k2) % listas->size;
     while (i < listas->size) {
         idx = (k1 + i * k2) % listas->size;
-        printf("IDX: %i \n", idx);
         if (listas->buckets[idx] && strcmp(listas->buckets[idx]->nombre, "numeros") == 0) {
             break;
         }

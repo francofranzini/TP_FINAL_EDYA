@@ -7,8 +7,8 @@
 #include <string.h>
 #include <ctype.h>
 
-void definir_lista(char* buffer, Listas* listas, Funciones* funciones);
-void definir_funciones_lista(char* buffer, Listas* listas, Funciones* funciones);
+void definir_lista(char* buffer, Listas* listas);
+void definir_funciones_lista(char* buffer, Funciones* funciones);
 void aplicar_funciones_lista(char* buffer, Listas* listas, Funciones* funciones);
 void buscar_funciones_lista(char* buffer, Listas* listas, Funciones* funciones);
 
