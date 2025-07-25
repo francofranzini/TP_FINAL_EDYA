@@ -80,16 +80,38 @@ void test_asignar_input_lista() {
     asignar_input_lista(input, nueva_lista);
     assert(strcmp(nueva_lista->nombre, "L1") == 0);
     assert(nueva_lista->lista != NULL);
+    lista_destruir(nueva_lista);
     
 }
+
+void test_validar_input_funcion() {
+    // Casos válidos
+    assert(validar_input_funcion("deff suma = si sd;") == 1);
+    assert(validar_input_funcion("deff f1 = si sd;") == 1);
+    assert(validar_input_funcion("deff Suma23 = si 0i Ed;") == 1);
+    assert(validar_input_funcion("deff   nombreFunc   =   si   sd ;") == 1);
+    assert(validar_input_funcion("deff x1 = si ;") == 1);
+    assert(validar_input_funcion("deff 123suma = si;") == 1);                
+    
+    // Casos inválidos
+    assert(validar_input_funcion("def suma = si sd;") == 0);                 // "def"
+    assert(validar_input_funcion("deff = si sd;") == 0);                     // falta nombre
+    assert(validar_input_funcion("deff suma si sd;") == 0);                  // falta '='
+    assert(validar_input_funcion("deff suma = ;") == 0);                     // sin funciones
+    assert(validar_input_funcion("deff suma = si sd") == 0);                 // sin ';' final
+    assert(validar_input_funcion("deff suma = si ! sd;") == 0);              // símbolo inválido
+    assert(validar_input_funcion("deff suma = ; si sd;") == 0);              // función después de ';'
+    assert(validar_input_funcion("deff suma = si 0i sd &;") == 0);           // símbolo inválido al final
+}
+
 
 int main() {
     test_validar_largo_input();
     test_recibir_input();
     test_validar_input_lista();
     test_asignar_input_lista();
-
-
+    test_validar_input_funcion();
+//  gcc -o test_parser test_parser.c ../src/parser.c ../src/variables.c ../src/DList/dlist.c
     printf("Todos los tests de parser pasaron correctamente.\n");
     return 0;
 }

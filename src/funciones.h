@@ -8,9 +8,9 @@
 #include <ctype.h>
 
 void definir_lista(char* buffer, Listas* listas);
-void definir_funciones_lista(char* buffer, Funciones* funciones);
-void aplicar_funciones_lista(char* buffer, Listas* listas, Funciones* funciones);
-void buscar_funciones_lista(char* buffer, Listas* listas, Funciones* funciones);
+void definir_funcion(char* buffer, Funciones* funciones);
+void aplicar_funcion(char* buffer, Listas* listas, Funciones* funciones);
+void buscar_funciones(char* buffer, Listas* listas, Funciones* funciones);
 
 
 #endif // __FUNCIONES_H__

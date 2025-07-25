@@ -25,7 +25,7 @@ void iniciar_programa(Listas* listas, Funciones* funciones) {
           printf("Cantidad de listas definidas: %i\nFactor de carga: %f\n", listas->count, listas->load_factor);
           break;
         case DEFF:
-          // definir_funciones_lista(buffer, funciones);
+          definir_funcion(buffer, funciones);
           break;
         case APPLY:
           //aplicar_funciones_lista(buffer, variables);

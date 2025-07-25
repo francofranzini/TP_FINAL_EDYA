@@ -37,13 +37,23 @@ void limpiar_stdin();
     - Espacios en blanco permitidos
     - Nombre: alfanumérico
     - Valores: alfanuméricos separados por comas
-    - Debe comenzar con '[' y terminar con ']'
+    - Debe comenzar con '[' y terminar con ']' en los valores
     - Debe terminar con ';'
 */
 int validar_input_lista(char* buffer);
 
-  // Asignar el nombre de la lista al bucket
-  // y asignar los valores de la lista
+// Valida el input considerando que esta definiendo una función
+/*
+    Formato: deff nombre = expresion;
+    - Espacios en blanco permitidos
+    - Nombre: alfanumérico
+    - Expresión: puede contener números y letras, nombres de funciones
+    - Debe terminar con ';'
+*/
+int validar_input_funcion(char* buffer);
+
+  // Asignar el nombre de la lista
+  // y sus valores, ingresados en el buffer
 void asignar_input_lista(char* buffer, Lista* lista);
 
 

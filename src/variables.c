@@ -86,8 +86,31 @@ Funciones* funciones_crear(int size){
   funciones->hash_function2 = (FuncionHash)Hash2;
   funciones->size = size;
   funciones->buckets = malloc(sizeof(Funcion*) * size);
+  for(int i = 0; i<size; i++) funciones->buckets[i] = NULL;
   funciones->count = 0;
   funciones->load_factor = 0;
 
+  /*
+    Agregar funciones base
+  */
   return funciones;
+}
+
+void funciones_destruir(Funciones* funciones){
+  for(int i = 0; i<funciones->size; i++) 
+  if(funciones->buckets[i] != NULL )funcion_destruir(funciones->buckets[i]);
+  free(funciones->buckets);
+  free(funciones);
+}
+
+Funcion* funcion_crear(){
+  Funcion* nueva_funcion = malloc(sizeof(Funcion));
+  assert(nueva_funcion != NULL);
+  for(int i = 0; i<20; i++) nueva_funcion->pasos[i] = NULL;
+  nueva_funcion->pasos_cantidad = 0;
+  return nueva_funcion;
+}
+
+void funcion_destruir(Funcion* funcion){
+  free(funcion);
 }

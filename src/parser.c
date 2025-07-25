@@ -106,6 +106,47 @@ int validar_input_lista(char* buffer) {
   return 1;
 }
 
+int validar_input_funcion(char* buffer) {
+  char* ptr = buffer;
+  while (isspace(*ptr)) ptr++;
+
+  if (strncmp(buffer, "deff", 4) != 0) {
+    return 0;
+  }
+  ptr += 4; // Saltar "deff"
+
+  while (isspace(*ptr)) ptr++;
+  
+  // Verificar que hay un nombre válido (letras y números)
+  if (!isalnum(*ptr)) return 0;
+  
+  // Saltea el nombre de la función
+  while (isalnum(*ptr)) ptr++;
+  
+  // Saltea espacios
+  while (isspace(*ptr)) ptr++;
+  
+  // Verificar el '='
+  if (*ptr++ != '=') {
+      return 0;
+  }
+  
+  // Saltar espacios después del '='
+  while (isspace(*ptr)) ptr++;
+  
+  int nula = 1;
+  while(*ptr != ';' && *ptr != '\0'){
+    if(nula == 1) nula = 0;
+    while(isalnum(*ptr)) ptr++;
+    while(isspace(*ptr)) ptr++;
+
+    if(!isalnum(*ptr) && *ptr != ';') return 0; //Cualquier simbolo que no sea la siguiente definicion o haya terminado
+  }
+  if(*ptr != ';') return 0;
+  return (nula == 0); //encontro alguna funcion
+}
+
+
 void asignar_input_lista(char* buffer, Lista* lista){
   char* ptr = buffer;
   while (isspace(*ptr)) ptr++;

@@ -14,7 +14,8 @@ typedef struct {
 
 typedef struct _Funcion{
   char nombre[256];          
-  struct _Funcion* funciones[20];             
+  struct _Funcion* pasos[20];
+  int pasos_cantidad;  
 } Funcion;
 
 typedef struct {
@@ -41,11 +42,18 @@ Listas* listas_crear();
 void listas_destruir(Listas* listas);
 
 Funciones* funciones_crear();
-
+void funciones_destruir(Funciones* funciones);
 
 Lista* lista_crear();
+void lista_destruir(Lista* entry);
+
+Funcion* funcion_crear();
+void funcion_destruir(Funcion* funcion);
+
 void lista_destruir(Lista* lista);
 void lista_agregar_valor(Lista* lista, int value);
+
+
 void listas_agregar_lista(Listas* listas, Lista* lista);
 void funciones_agregar_funcion(Funciones* funciones, Funcion* funcion);
 
