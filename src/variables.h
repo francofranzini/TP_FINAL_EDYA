@@ -68,6 +68,7 @@ void dlist_sumar_uno_inicio(DList* lista);
 int es_funcion_base(Funcion* funcion);
 int termina_repeticion(Lista* lista);
 int aplicar_funcion_lista_base(Lista* lista,Funcion* funcion);
+int aplicar_funcion_lista(Lista* lista, Funcion* funcion);
 
 
 #endif /* __VARIABLES_H__ */

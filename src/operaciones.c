@@ -22,9 +22,9 @@ void definir_funcion(char* buffer, Funciones* funciones){
 
   if(count == funciones->count) funcion_destruir(nueva_funcion);
 }
-void aplicar_funcion(char* buffer, Funciones* funciones){
-  if(!validar_input_aplicar(buffer)) return;
+// void aplicar_funcion(char* buffer, Funciones* funciones){
+//   if(!validar_input_aplicar(buffer)) return;
 
 
-  // aplicar_funcion_lista()
-}
+//   // aplicar_funcion_lista()
+// }

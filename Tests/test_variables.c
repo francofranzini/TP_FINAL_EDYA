@@ -1,7 +1,8 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-#include "../src/variables.h" 
+#include "../src/variables.h"
+#include "../src/operaciones.h"
 
 
 
@@ -152,6 +153,59 @@ void test_funcion_agregar(){
 	funcion_destruir(funcion);
 
 }
+void test_termina_repeticion() {
+	Lista* lista = lista_crear();
+	lista_agregar_valor(lista, 3);
+	lista_agregar_valor(lista, 3);
+	assert(termina_repeticion(lista));
+	dlist_sumar_primero(lista->lista); // ahora son 4 y 3
+	assert(!termina_repeticion(lista));
+	lista_destruir(lista);
+}
+
+void test_aplicar_funcion_simple() {
+	Funciones* funciones = funciones_crear(101);
+	Lista* lista = lista_crear();
+	lista_agregar_valor(lista, 1);
+
+	char input[512];
+	strcpy(input,"deff sumar3 = Si Si Si;");
+
+	definir_funcion(input, funciones);
+
+	strcpy(input,"deff sumar6 = sumar3 sumar3;");
+
+	definir_funcion(input, funciones);
+
+
+
+	int idx = funciones_buscar_funcion(funciones, "sumar6");
+	assert(idx != -1);
+
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+
+	assert(lista->lista->primero->dato == 7); // 
+	// assert(lista->lista->ultimo->dato == 2);  // 1 + 1 (Sd)
+	lista_destruir(lista);
+	funciones_destruir(funciones);
+}
+void test_aplicar_funcion_repeticion() {
+  Funciones* funciones = funciones_crear(101);
+  Lista* lista = lista_crear();
+  lista_agregar_valor(lista, 0);
+  lista_agregar_valor(lista, 3);
+
+  // repetirá Si hasta que primero == ultimo (es decir, 0 -> 3 con 3 Si)
+  char input[] = "deff f2 = <Si>;";
+  definir_funcion(input, funciones);
+  int idx = funciones_buscar_funcion(funciones, "f2");
+  aplicar_funcion_lista(lista, funciones->buckets[idx]);
+
+  assert(lista->lista->primero->dato == lista->lista->ultimo->dato);
+  lista_destruir(lista);
+  funciones_destruir(funciones);
+}
+
 int main() {
 	test_lista_crear_y_agregar();
 	test_listas_agregar_y_buscar();
@@ -161,7 +215,10 @@ int main() {
 	test_funciones_crear();
 	test_funciones_buscar();
 	test_funcion_agregar();
-	//gcc -o test_variables ./test_variables.c ../src/DList/dlist.c ../src/variables.c
+	test_termina_repeticion();
+	test_aplicar_funcion_simple();
+
+	//gcc -o test_variables ./test_variables.c ../src/DList/dlist.c ../src/variables.c ../src/operaciones.c ../src/parser.c
 	printf("Todos los tests pasaron correctamente\n");
 	return 0;
 }
