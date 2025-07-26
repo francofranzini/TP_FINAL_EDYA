@@ -161,7 +161,7 @@ int main() {
 	test_funciones_crear();
 	test_funciones_buscar();
 	test_funcion_agregar();
-
+	//gcc -o test_variables ./test_variables.c ../src/DList/dlist.c ../src/variables.c
 	printf("Todos los tests pasaron correctamente\n");
 	return 0;
 }

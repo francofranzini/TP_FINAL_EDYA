@@ -19,7 +19,11 @@ void dlist_destruir(DList* lista) {
 int dlist_vacia(DList* lista) {
   return lista->primero == NULL;
 }
-void dlist_agregar_final(DList* lista, int dato) {
+void dlist_recorrer(DList* lista, FuncionVisitante visit) {
+  for (DNodo *nodo = lista->primero; nodo != NULL; nodo = nodo->sig)
+    visit(nodo->dato);
+}
+void dlist_agregar_ultimo(DList* lista, int dato) {
   DNodo *nuevoNodo = malloc(sizeof(DNodo));
   assert(nuevoNodo != NULL);
   nuevoNodo->dato = dato;
@@ -33,7 +37,7 @@ void dlist_agregar_final(DList* lista, int dato) {
     lista->ultimo = nuevoNodo;
   }
 }
-void dlist_agregar_inicio(DList* lista, int dato) {
+void dlist_agregar_primero(DList* lista, int dato) {
   DNodo *nuevoNodo = malloc(sizeof(DNodo));
   assert(nuevoNodo != NULL);
   nuevoNodo->dato = dato;
@@ -46,10 +50,6 @@ void dlist_agregar_inicio(DList* lista, int dato) {
   if (lista->ultimo == NULL) {
     lista->ultimo = nuevoNodo;
   }
-}
-void dlist_recorrer(DList* lista, FuncionVisitante visit) {
-  for (DNodo *nodo = lista->primero; nodo != NULL; nodo = nodo->sig)
-    visit(nodo->dato);
 }
 void dlist_eliminar_ultimo(DList* lista) {
   DNodo* nodoAEliminar = lista->ultimo;
@@ -70,6 +70,12 @@ void dlist_eliminar_primero(DList* lista){
     lista->ultimo = NULL;
   }
   free(nodoAEliminar);
+}
+void dlist_sumar_primero(DList* lista){
+  lista->primero->dato++;
+}
+void dlist_sumar_ultimo(DList* lista){
+  lista->ultimo->dato++;
 }
 
 

@@ -2,6 +2,7 @@
 #define __VARIABLES_H__
 
 #define MAX_NAME 32
+#define MAX_ITER 10000
 
 #include "./DList/dlist.h"
 #include <string.h>
@@ -61,6 +62,12 @@ void lista_agregar_valor(Lista* lista, int value);
 void listas_agregar_lista(Listas* listas, Lista* lista);
 void funciones_agregar_funcion(Funciones* funciones, Funcion* funcion);
 void funcion_agregar_funcion(Funcion* funcion, Funcion* f_agregar);
+
+void dlist_sumar_uno_inicio(DList* lista);
+
+int es_funcion_base(Funcion* funcion);
+int termina_repeticion(Lista* lista);
+int aplicar_funcion_lista_base(Lista* lista,Funcion* funcion);
 
 
 #endif /* __VARIABLES_H__ */

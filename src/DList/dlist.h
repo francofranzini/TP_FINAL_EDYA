@@ -32,18 +32,20 @@ void dlist_destruir(DList* lista);
 
 /**
  * Determina si la lista es vacía.
+  1: es vacia
+  0: no es vacia
  */
 int dlist_vacia(DList* lista);
 
 /**
  * Agrega un elemento al final de la lista.
  */
-void dlist_agregar_final(DList* lista, int dato);
+void dlist_agregar_ultimo(DList* lista, int dato);
 
 /**
  * Agrega un elemento al inicio de la lista.
  */
-void dlist_agregar_inicio(DList* lista, int dato);
+void dlist_agregar_primero(DList* lista, int dato);
 
 /**
  * Recorrido de la lista, utilizando la funcion pasada.
@@ -53,5 +55,9 @@ void dlist_recorrer(DList* lista, FuncionVisitante visit);
 void dlist_eliminar_ultimo(DList* lista);
 
 void dlist_eliminar_primero(DList* lista);
+
+void dlist_sumar_ultimo(DList* lista);
+
+void dlist_sumar_primero(DList* lista);
 
 #endif /* __DLIST_H__ */

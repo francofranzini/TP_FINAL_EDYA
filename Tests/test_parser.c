@@ -88,6 +88,8 @@ void test_validar_input_funcion() {
   Funciones* funciones = funciones_crear(101);
   
   // Casos válidos
+  
+  assert(validar_input_funcion("deff f1 = Si <Dd Di> Sd 0i;", funciones) == 1);
   assert(validar_input_funcion("deff suma = Si Sd;", funciones) == 1);
   assert(validar_input_funcion("deff f1 = Si <Sd>;", funciones) == 1);
   assert(validar_input_funcion("deff f1 = Si <Sd Sd Sd Sd>;", funciones) == 1);
@@ -174,7 +176,7 @@ int main() {
     test_asignar_input_lista();
     test_validar_input_funcion();
     test_asignar_input_funcion();
-//  gcc -o test_parser test_parser.c ../src/parser.c ../src/variables.c ../src/DList/dlist.c
+//  a
     printf("Todos los tests de parser pasaron correctamente.\n");
     return 0;
 }

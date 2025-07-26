@@ -1,5 +1,7 @@
 #include "variables.h"
 
+
+
 unsigned KRHash(char* key) {
     unsigned hashval;
     for(hashval = 0; *key != '\0'; key++) {
@@ -75,7 +77,7 @@ void lista_destruir(Lista* entry) {
 }
 void lista_agregar_valor(Lista* lista, int value){
   assert(lista != NULL);
-  dlist_agregar_final(lista->lista, value);
+  dlist_agregar_ultimo(lista->lista, value);
 }
 
 void agregar_funciones_base(Funciones* funciones) {
@@ -186,4 +188,80 @@ void funcion_agregar_funcion(Funcion* funcion, Funcion* f_agregar){
 
 void funcion_destruir(Funcion* funcion){
   free(funcion);
+}
+
+int aplicar_funcion_lista(Lista* lista, Funcion* funcion){
+  if(es_funcion_base(funcion)) return aplicar_funcion_lista_base(lista, funcion);
+
+  for(int i = 0; i<funcion->pasos_cantidad;){
+    int repite_id = funcion->repite[i];
+    if (repite_id != 0) {
+      // Buscar fin del bloque de repetición
+      int fin = i;
+      while (fin < funcion->pasos_cantidad && funcion->repite[fin] == repite_id) {
+        fin++;
+      }
+
+      // Aplicar una vez el bloque antes del bucle
+      for (int j = i; j < fin; j++) {
+        if (!aplicar_funcion_lista(lista, funcion->pasos[j])) return 0;
+      }
+
+      // Repetir el bloque hasta que termina_repeticion o max iteraciones
+      int count = 1;
+      while (!termina_repeticion(lista) && count < MAX_ITER) {
+        for (int j = i; j < fin; j++) 
+          if (!aplicar_funcion_lista(lista, funcion->pasos[j])) return 0;
+        count++;
+      }
+
+      i = fin; // Saltar todo el bloque
+    }
+    else{
+      aplicar_funcion_lista(lista, funcion->pasos[i]);
+      i++;
+    }
+  }
+}
+int aplicar_funcion_lista_base(Lista* lista,Funcion* funcion){
+  if(!dlist_vacia(lista->lista)){
+    if(strcmp(funcion->nombre, "Si") == 0){
+      dlist_sumar_primero(lista->lista);
+      return 1;
+    } 
+    if(strcmp(funcion->nombre, "Sd") == 0){
+      dlist_sumar_ultimo(lista->lista);
+      return 1;
+    } 
+    if(strcmp(funcion->nombre, "Di") == 0){
+      dlist_eliminar_primero(lista->lista);
+      return 1;
+    } 
+    if(strcmp(funcion->nombre, "Dd") == 0){
+      dlist_eliminar_ultimo(lista->lista);
+      return 1;
+    } 
+
+  }
+  if(strcmp(funcion->nombre, "0i") == 0){
+    dlist_agregar_primero(lista->lista, 0);
+    return 1;
+  } 
+  if(strcmp(funcion->nombre, "0d") == 0){
+    dlist_agregar_ultimo(lista->lista, 0);
+    return 1;
+  } 
+
+  return 0;
+}
+int termina_repeticion(Lista* lista){
+  return lista->lista->primero->dato == lista->lista->ultimo->dato;
+}
+int es_funcion_base(Funcion* funcion){
+  return (strcmp(funcion->nombre, "Si") == 0 ||
+          strcmp(funcion->nombre, "Sd") == 0 ||
+          strcmp(funcion->nombre, "0i") == 0 ||
+          strcmp(funcion->nombre, "0d") == 0 ||
+          strcmp(funcion->nombre, "Di") == 0 ||
+          strcmp(funcion->nombre, "Dd") == 0);
 }
