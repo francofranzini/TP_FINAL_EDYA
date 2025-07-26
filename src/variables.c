@@ -138,7 +138,10 @@ int funciones_buscar_funcion(Funciones* funciones, char* nombre){
 
 void funciones_destruir(Funciones* funciones){
   for(int i = 0; i<funciones->size; i++) 
-  if(funciones->buckets[i] != NULL )funcion_destruir(funciones->buckets[i]);
+  if(funciones->buckets[i] != NULL ){
+    funcion_destruir(funciones->buckets[i]);
+  
+  }
   free(funciones->buckets);
   free(funciones);
 }

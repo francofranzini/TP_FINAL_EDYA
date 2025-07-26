@@ -55,6 +55,6 @@ int validar_input_funcion(char* buffer, Funciones* funciones);
   // y sus valores, ingresados en el buffer
 void asignar_input_lista(char* buffer, Lista* lista);
 
-
+void asignar_input_funcion(char* buffer, Funciones* funciones,Funcion* funcion);
 
 #endif // __PARSER_H__

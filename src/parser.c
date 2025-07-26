@@ -145,8 +145,12 @@ int validar_input_funcion(char* buffer, Funciones* funciones) {
   // Saltar espacios después del '='
   while (isspace(*ptr)) ptr++;
   
-  int nula = 1, repite = 0;
+  int nula = 1, repite = 0, pasos = 0;
   while(*ptr != ';' && *ptr != '\0'){
+    if(pasos++ == 20){
+      printf("Puede componer hasta 20 funciones en una sola declaracion");
+      return 0;
+    } 
     if(nula == 1) nula = 0;
 
     char nombre[32];
@@ -227,14 +231,17 @@ void asignar_input_lista(char* buffer, Lista* lista){
 
 
 //COMPLETAR
-void asignar_input_funcion(char* buffer, Funcion* funcion, int *aux) {
+void asignar_input_funcion(char* buffer, Funciones* funciones,Funcion* funcion) {
   char* ptr = buffer;
   while (isspace(*ptr)) ptr++;
   ptr+=4;
+  while(isspace(*ptr))ptr++;
+
 
   int i = 0;
   while (isalnum(*ptr) && i < MAX_NAME - 1) {
-    funcion->nombre[i++] = *ptr++;
+    funcion->nombre[i++] = *ptr;
+    ptr++;
   }
   funcion->nombre[i] = '\0';
 
@@ -242,9 +249,37 @@ void asignar_input_funcion(char* buffer, Funcion* funcion, int *aux) {
   ptr++; // Saltar '='
   while(isspace(*ptr)) ptr++;
 
+  /*
+    deff s = Si  Sd <Si Si Sd> 0i;
+            [0   0  1  1  1   0]
+  */
+  int repitiendo = 0, bucle = 0;
   while(*ptr != ';'){
-    //Escribir parser considerando lo visto del array de repeticiones
+    if(*ptr == '<'){ //repitiendo
+      repitiendo = 1;
+      bucle++;
+      ptr++;
+    }
+    while(isspace(*ptr)) ptr++;
+    char nombre[32];
+    int i = 0;
+    while(isalnum(*ptr)){
+      nombre[i++] = *ptr;
+      ptr++;
+    }
+    nombre[i] = '\0';
+    
+    int k = funciones_buscar_funcion(funciones, nombre);
+    if(repitiendo) funcion->repite[funcion->pasos_cantidad] = bucle;
+    funcion_agregar_funcion(funcion, funciones->buckets[k]);
+    
+    while(isspace(*ptr))ptr++;
+    if(*ptr == '>'){
+      repitiendo = 0;
+      ptr++;
+    }
+    while(isspace(*ptr))ptr++;
   }
-
+  
 }
 
