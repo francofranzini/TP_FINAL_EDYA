@@ -8,9 +8,8 @@
 #include <assert.h>
 #include "variables.h"
 
-#define MAX_STEPS 100
-#define MAX_FUNC_NAME 32
-#define MAX_LIST_NAME 32
+
+#define MAX_NAME 32
 
 typedef enum {
   DEFL,
@@ -50,7 +49,7 @@ int validar_input_lista(char* buffer);
     - Expresión: puede contener números y letras, nombres de funciones
     - Debe terminar con ';'
 */
-int validar_input_funcion(char* buffer);
+int validar_input_funcion(char* buffer, Funciones* funciones);
 
   // Asignar el nombre de la lista
   // y sus valores, ingresados en el buffer

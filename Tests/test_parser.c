@@ -85,23 +85,32 @@ void test_asignar_input_lista() {
 }
 
 void test_validar_input_funcion() {
+    Funciones* funciones = funciones_crear(101);
+    
     // Casos válidos
-    assert(validar_input_funcion("deff suma = si sd;") == 1);
-    assert(validar_input_funcion("deff f1 = si sd;") == 1);
-    assert(validar_input_funcion("deff Suma23 = si 0i Ed;") == 1);
-    assert(validar_input_funcion("deff   nombreFunc   =   si   sd ;") == 1);
-    assert(validar_input_funcion("deff x1 = si ;") == 1);
-    assert(validar_input_funcion("deff 123suma = si;") == 1);                
+    assert(validar_input_funcion("deff suma = Si Sd;", funciones) == 1);
+    assert(validar_input_funcion("deff f1 = Si <Sd>;", funciones) == 1);
+    assert(validar_input_funcion("deff f1 = Si <Sd Sd Sd Sd>;", funciones) == 1);
+    assert(validar_input_funcion("deff f1 = Si <Sd>;", funciones) == 1);
+    assert(validar_input_funcion("deff Suma23 = Si <0i> <Dd>;", funciones) == 1);
+    assert(validar_input_funcion("deff   nombreFunc   =   Si   Sd ;", funciones) == 1);
+    assert(validar_input_funcion("deff x1 = Si ;", funciones) == 1);
+    assert(validar_input_funcion("deff 123suma = Si;", funciones) == 1);                
     
     // Casos inválidos
-    assert(validar_input_funcion("def suma = si sd;") == 0);                 // "def"
-    assert(validar_input_funcion("deff = si sd;") == 0);                     // falta nombre
-    assert(validar_input_funcion("deff suma si sd;") == 0);                  // falta '='
-    assert(validar_input_funcion("deff suma = ;") == 0);                     // sin funciones
-    assert(validar_input_funcion("deff suma = si sd") == 0);                 // sin ';' final
-    assert(validar_input_funcion("deff suma = si ! sd;") == 0);              // símbolo inválido
-    assert(validar_input_funcion("deff suma = ; si sd;") == 0);              // función después de ';'
-    assert(validar_input_funcion("deff suma = si 0i sd &;") == 0);           // símbolo inválido al final
+    assert(validar_input_funcion("deff f1 = Si <S1 S2 S3 S4>;", funciones) == 0);
+    assert(validar_input_funcion("deff f1 = Si <S1 S2 S3 S4>;", funciones) == 0);
+    assert(validar_input_funcion("deff Suma23 = Si <0i  Dd;", funciones) == 0);
+    assert(validar_input_funcion("def suma = Si Sd;", funciones) == 0);                 // "def"
+    assert(validar_input_funcion("deff = Si Sd;", funciones) == 0);                     // falta nombre
+    assert(validar_input_funcion("deff suma Si Sd;", funciones) == 0);                  // falta '='
+    assert(validar_input_funcion("deff suma = ;", funciones) == 0);                     // sin funciones
+    assert(validar_input_funcion("deff suma = Si Sd", funciones) == 0);                 // sin ';' final
+    assert(validar_input_funcion("deff suma =  Si> Sd;", funciones) == 0);              // cierra > sin <
+    assert(validar_input_funcion("deff suma = ; Si Sd;", funciones) == 0);              // función después de ';'
+    assert(validar_input_funcion("deff suma = Si 0i Sd &;", funciones) == 0);           // símbolo inválido al final
+    assert(validar_input_funcion("deff esteesunnombremuylargoparaprobarquenoguarda = Si Sd;", funciones) == 0);
+    funciones_destruir(funciones);
 }
 
 

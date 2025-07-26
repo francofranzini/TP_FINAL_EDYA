@@ -50,8 +50,14 @@ int validar_input_lista(char* buffer) {
   if (!isalpha(*ptr)) {
     return 0;
   }
-  //Saltea el nombre de la lista
-  while (isalnum(*ptr)) ptr++;
+  // Saltea el nombre de la lista
+  // y verifica que no sea demasiado largo
+  int nombre_len = 0;
+  while (isalnum(*ptr)) {
+    nombre_len++;
+    if (nombre_len >= MAX_NAME-1) return 0;  // nombre demasiado largo
+    ptr++;
+  }
   // Saltea espacios
   while (isspace(*ptr)) ptr++;
   
@@ -106,7 +112,8 @@ int validar_input_lista(char* buffer) {
   return 1;
 }
 
-int validar_input_funcion(char* buffer) {
+
+int validar_input_funcion(char* buffer, Funciones* funciones) {
   char* ptr = buffer;
   while (isspace(*ptr)) ptr++;
 
@@ -120,8 +127,12 @@ int validar_input_funcion(char* buffer) {
   // Verificar que hay un nombre válido (letras y números)
   if (!isalnum(*ptr)) return 0;
   
-  // Saltea el nombre de la función
-  while (isalnum(*ptr)) ptr++;
+  int nombre_len = 0;
+  while (isalnum(*ptr)) {
+    nombre_len++;
+    if (nombre_len >= MAX_NAME-1) return 0;  // nombre demasiado largo
+    ptr++;
+  }
   
   // Saltea espacios
   while (isspace(*ptr)) ptr++;
@@ -134,16 +145,42 @@ int validar_input_funcion(char* buffer) {
   // Saltar espacios después del '='
   while (isspace(*ptr)) ptr++;
   
-  int nula = 1;
+  int nula = 1, repite = 0;
   while(*ptr != ';' && *ptr != '\0'){
     if(nula == 1) nula = 0;
-    while(isalnum(*ptr)) ptr++;
+
+    char nombre[32];
+    int i = 0;
+    if(*ptr == '<')
+    {
+      if(repite) return 0; //caso < ... <
+      ptr++;
+      repite = 1;
+    }
+    while(isalnum(*ptr)){
+      if(i == 31) return 0;  // nombre de funcion muy largo
+      nombre[i++] = *ptr;
+      ptr++;
+    }
+    nombre[i] = '\0';
+
+    if(*ptr == '>'){
+      if(repite){
+        ptr++;
+        repite = 0;
+      } 
+      else return 0; //Encuentra '>' sin '<' previamente
+    }
+    
+    int k = funciones_buscar_funcion(funciones, nombre);
+    if(k == -1) return 0;
+
     while(isspace(*ptr)) ptr++;
 
-    if(!isalnum(*ptr) && *ptr != ';') return 0; //Cualquier simbolo que no sea la siguiente definicion o haya terminado
+    if(!isalnum(*ptr) && *ptr != ';' && *ptr != '<') return 0; //Cualquier simbolo que no sea la siguiente definicion o haya terminado
   }
   if(*ptr != ';') return 0;
-  return (nula == 0); //encontro alguna funcion
+  return (nula == 0 && repite == 0); //encontro alguna funcion y cerro >
 }
 
 
@@ -156,7 +193,7 @@ void asignar_input_lista(char* buffer, Lista* lista){
   while (isspace(*ptr)) ptr++;
   // Copiar el nombre de la lista al bucket
   int i = 0;
-  while (isalnum(*ptr) && i < MAX_LIST_NAME - 1) {
+  while (isalnum(*ptr) && i < MAX_NAME - 1) {
     lista->nombre[i++] = *ptr++;
   }
   lista->nombre[i] = '\0'; // Terminar la cadena
@@ -186,5 +223,28 @@ void asignar_input_lista(char* buffer, Lista* lista){
       ptr++; // Saltar la coma
     }
   }
+}
+
+
+//COMPLETAR
+void asignar_input_funcion(char* buffer, Funcion* funcion, int *aux) {
+  char* ptr = buffer;
+  while (isspace(*ptr)) ptr++;
+  ptr+=4;
+
+  int i = 0;
+  while (isalnum(*ptr) && i < MAX_NAME - 1) {
+    funcion->nombre[i++] = *ptr++;
+  }
+  funcion->nombre[i] = '\0';
+
+  while(isspace(*ptr)) ptr++;
+  ptr++; // Saltar '='
+  while(isspace(*ptr)) ptr++;
+
+  while(*ptr != ';'){
+    //Escribir parser considerando lo visto del array de repeticiones
+  }
+
 }
 
