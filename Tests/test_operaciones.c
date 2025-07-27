@@ -27,7 +27,6 @@ void test_definir_lista_exitosa() {
   listas_destruir(listas);
 }
 
-
 void test_definir_lista_fallido(){
   Listas* listas = listas_crear(101);
 
@@ -60,12 +59,12 @@ void test_definir_lista_fallido(){
 void test_definir_funcion_exitosa(){
   Funciones* funciones  = funciones_crear(101);
   char input[512];
-  strcpy(input,"deff f1 = Si <Dd Di> Sd 0i;");
+  strcpy(input,"deff f1 = Si <Dd Di> Sd Oi;");
 
   definir_funcion(input, funciones);
   assert(funciones->count == 7);
 
-  strcpy(input,"deff f2 = f1 <Dd Di> Sd 0i;");
+  strcpy(input,"deff f2 = f1 <Dd Di> Sd Oi;");
   definir_funcion(input, funciones);
   assert(funciones->count == 8);
 
@@ -75,17 +74,64 @@ void test_definir_funcion_exitosa(){
   assert(strcmp(funciones->buckets[k2]->nombre, "f2") == 0);
 
   assert(strcmp(funciones->buckets[k1]->pasos[2]->nombre, "Di") == 0);
-  assert(strcmp(funciones->buckets[k1]->pasos[4]->nombre, "0i") == 0);
+  assert(strcmp(funciones->buckets[k1]->pasos[4]->nombre, "Oi") == 0);
   assert(funciones->buckets[k1]->pasos_cantidad == 5);
   assert(funciones->buckets[k2]->pasos_cantidad == 5);
 
 
 }
 
+void test_aplicar_funcion() {
+  Funciones* funciones = funciones_crear(101);
+  Listas* listas = listas_crear(101);
+  char buffer[512];
+
+  strcpy(buffer, "deff f1 = Si Si;");
+  definir_funcion(buffer, funciones);
+  
+  strcpy(buffer, "apply f1 [1, 3, 6];");
+
+  aplicar_funcion(buffer, funciones, listas);
+
+  // Test 2: aplicar f1 sobre lista nombrada
+  
+  strcpy(buffer, "defl miLista = [1, 2, 3, 4, 5];");
+  definir_lista(buffer, listas);
+
+  strcpy(buffer, "apply f1 miLista;");
+  aplicar_funcion(buffer, funciones, listas);
+
+  strcpy(buffer, "deff Mi = Oi <Si> Dd;");
+	definir_funcion(buffer ,funciones);
+
+  strcpy(buffer, "deff Md = Od <Sd> Di;");
+	definir_funcion(buffer, funciones);
+  
+  strcpy(buffer,"deff S1 = Md Oi Mi Oi;");
+	definir_funcion(buffer, funciones);
+
+	strcpy(buffer,"deff S2 = <Si Md Md Si Mi Mi>;");
+	definir_funcion(buffer, funciones);
+
+	strcpy(buffer,"deff S3 = Dd Di Md;");
+	definir_funcion(buffer, funciones);
+
+	strcpy(buffer,"deff S = S1 S2 S3;");
+	definir_funcion(buffer, funciones);
+
+  strcpy(buffer, "apply S miLista;");
+  aplicar_funcion(buffer, funciones, listas);
+
+  funciones_destruir(funciones);
+  listas_destruir(listas);
+}
+
+
 int main() {
-  // test_definir_lista_exitosa();
-  // test_definir_lista_fallido();
   test_definir_funcion_exitosa();
+  test_definir_lista_exitosa();
+  test_definir_lista_fallido();
+  test_aplicar_funcion();
   printf("Todos los tests de definir_lista pasaron correctamente.\n");
   return 0;
 }

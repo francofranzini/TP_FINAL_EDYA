@@ -60,6 +60,20 @@ void listas_agregar_lista(Listas* listas, Lista* lista){
   
 }
 
+int listas_buscar_lista(Listas* listas, char* nombre){
+  unsigned k1 = listas->hash_function1(nombre) % listas->size;
+  unsigned k2 = 1 + (listas->hash_function2(nombre) % (listas->size - 1));
+  int j = 0;
+  while(j < listas->size){
+    unsigned idx = (k1 + j*k2) % listas->size;
+
+    if(listas->buckets[idx] == NULL) return -1;
+
+    if(strcmp(listas->buckets[idx]->nombre, nombre) == 0) return idx;
+    
+    j++;
+  }
+}
 
 Lista* lista_crear(){
   Lista* nueva_lista = malloc(sizeof(Lista));
@@ -79,6 +93,21 @@ void lista_agregar_valor(Lista* lista, int value){
   assert(lista != NULL);
   dlist_agregar_ultimo(lista->lista, value);
 }
+void lista_copiar(Lista* origen, Lista* destino) {
+  DNodo* nodo = origen->lista->primero;
+  while(nodo != NULL) {
+    dlist_agregar_ultimo(destino->lista, nodo->dato); 
+    nodo = nodo->sig;
+  }
+}
+void lista_recorrer(Lista* lista) {
+  if (lista == NULL || lista->lista == NULL) return;
+  DNodo* nodo = lista->lista->primero;
+  while (nodo != NULL) {
+    printf("%d ", nodo->dato);
+    nodo = nodo->sig;
+  }
+}
 
 void agregar_funciones_base(Funciones* funciones) {
   Funcion* si = funcion_crear();
@@ -90,11 +119,11 @@ void agregar_funciones_base(Funciones* funciones) {
   funciones_agregar_funcion(funciones, sd);
 
   Funcion* cero_d = funcion_crear();
-  strcpy(cero_d->nombre, "0d");
+  strcpy(cero_d->nombre, "Od");
   funciones_agregar_funcion(funciones, cero_d);
 
   Funcion* cero_i = funcion_crear();
-  strcpy(cero_i->nombre, "0i");
+  strcpy(cero_i->nombre, "Oi");
   funciones_agregar_funcion(funciones, cero_i);
 
   Funcion* ed = funcion_crear();
@@ -169,7 +198,6 @@ void funciones_agregar_funcion(Funciones* funciones, Funcion* funcion){
   }
 }
 
-
 Funcion* funcion_crear(){
   Funcion* nueva_funcion = malloc(sizeof(Funcion));
   assert(nueva_funcion != NULL);
@@ -181,7 +209,6 @@ Funcion* funcion_crear(){
   return nueva_funcion;
 }
 
-
 void funcion_agregar_funcion(Funcion* funcion, Funcion* f_agregar){
   funcion->pasos[funcion->pasos_cantidad++] = f_agregar;
 }
@@ -190,8 +217,8 @@ void funcion_destruir(Funcion* funcion){
   free(funcion);
 }
 
-int aplicar_funcion_lista(Lista* lista, Funcion* funcion){
-  if(es_funcion_base(funcion)) return aplicar_funcion_lista_base(lista, funcion);
+void aplicar_funcion_lista(Lista* lista, Funcion* funcion){
+  if(es_funcion_base(funcion)) aplicar_funcion_lista_base(lista, funcion);
 
   for(int i = 0; i<funcion->pasos_cantidad;){
     int repite_id = funcion->repite[i];
@@ -201,17 +228,10 @@ int aplicar_funcion_lista(Lista* lista, Funcion* funcion){
       while (fin < funcion->pasos_cantidad && funcion->repite[fin] == repite_id) {
         fin++;
       }
-
-      // Aplicar una vez el bloque antes del bucle
-      for (int j = i; j < fin; j++) {
-        if (!aplicar_funcion_lista(lista, funcion->pasos[j])) return 0;
-      }
-
-      // Repetir el bloque hasta que termina_repeticion o max iteraciones
-      int count = 1;
+      int count = 0;
       while (!termina_repeticion(lista) && count < MAX_ITER) {
         for (int j = i; j < fin; j++) 
-          if (!aplicar_funcion_lista(lista, funcion->pasos[j])) return 0;
+          aplicar_funcion_lista(lista, funcion->pasos[j]);
         count++;
       }
 
@@ -223,45 +243,25 @@ int aplicar_funcion_lista(Lista* lista, Funcion* funcion){
     }
   }
 }
-int aplicar_funcion_lista_base(Lista* lista,Funcion* funcion){
+void aplicar_funcion_lista_base(Lista* lista,Funcion* funcion){
   if(!dlist_vacia(lista->lista)){
-    if(strcmp(funcion->nombre, "Si") == 0){
-      dlist_sumar_primero(lista->lista);
-      return 1;
-    } 
-    if(strcmp(funcion->nombre, "Sd") == 0){
-      dlist_sumar_ultimo(lista->lista);
-      return 1;
-    } 
-    if(strcmp(funcion->nombre, "Di") == 0){
-      dlist_eliminar_primero(lista->lista);
-      return 1;
-    } 
-    if(strcmp(funcion->nombre, "Dd") == 0){
-      dlist_eliminar_ultimo(lista->lista);
-      return 1;
-    } 
-
+    if(strcmp(funcion->nombre, "Si") == 0) dlist_sumar_primero(lista->lista);
+    if(strcmp(funcion->nombre, "Sd") == 0) dlist_sumar_ultimo(lista->lista); 
+    if(strcmp(funcion->nombre, "Di") == 0) dlist_eliminar_primero(lista->lista);
+    if(strcmp(funcion->nombre, "Dd") == 0) dlist_eliminar_ultimo(lista->lista);
   }
-  if(strcmp(funcion->nombre, "0i") == 0){
-    dlist_agregar_primero(lista->lista, 0);
-    return 1;
-  } 
-  if(strcmp(funcion->nombre, "0d") == 0){
-    dlist_agregar_ultimo(lista->lista, 0);
-    return 1;
-  } 
-
-  return 0;
+  if(strcmp(funcion->nombre, "Oi") == 0) dlist_agregar_primero(lista->lista, 0);
+  if(strcmp(funcion->nombre, "Od") == 0) dlist_agregar_ultimo(lista->lista, 0);
 }
 int termina_repeticion(Lista* lista){
-  return lista->lista->primero->dato == lista->lista->ultimo->dato;
+  if(!dlist_vacia(lista->lista)) return lista->lista->primero->dato == lista->lista->ultimo->dato;
+  else return 0;
 }
 int es_funcion_base(Funcion* funcion){
   return (strcmp(funcion->nombre, "Si") == 0 ||
           strcmp(funcion->nombre, "Sd") == 0 ||
-          strcmp(funcion->nombre, "0i") == 0 ||
-          strcmp(funcion->nombre, "0d") == 0 ||
+          strcmp(funcion->nombre, "Oi") == 0 ||
+          strcmp(funcion->nombre, "Od") == 0 ||
           strcmp(funcion->nombre, "Di") == 0 ||
           strcmp(funcion->nombre, "Dd") == 0);
 }

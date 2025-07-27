@@ -29,7 +29,7 @@ void iniciar_programa(Listas* listas, Funciones* funciones) {
           printf("Cantidad de funciones definidas: %i\nFactor de carga: %f\n", funciones->count, funciones->load_factor);
           break;
         case APPLY:
-          //aplicar_funciones_lista(buffer, variables);
+          aplicar_funciones_lista(buffer, variables);
           break;
         case SEARCH:
           //buscar_funciones_lista(buffer, variables);

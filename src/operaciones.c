@@ -22,9 +22,29 @@ void definir_funcion(char* buffer, Funciones* funciones){
 
   if(count == funciones->count) funcion_destruir(nueva_funcion);
 }
-// void aplicar_funcion(char* buffer, Funciones* funciones){
-//   if(!validar_input_aplicar(buffer)) return;
+void aplicar_funcion(char* buffer, Funciones* funciones, Listas* listas) {
+  int tipo = validar_input_aplicar(buffer, funciones, listas);
+  if(tipo == 0) return; // Input inválido
+  
+  char nombre_funcion[32];
+  extraer_nombre_funcion(buffer, nombre_funcion);
+  int idx_funcion = funciones_buscar_funcion(funciones, nombre_funcion);
+  assert(idx_funcion != -1);
+  Funcion* funcion = funciones->buckets[idx_funcion];
+  Lista* lista_temp = lista_crear();
+  if(tipo == 1){
+    extraer_valores_lista(buffer, lista_temp);
+  }
+  else{
+    char nombre_lista[32];
+    extraer_nombre_lista(buffer, nombre_lista);
+    int idx = listas_buscar_lista(listas, nombre_lista);
+    lista_copiar(listas->buckets[idx], lista_temp);
+  }
+  aplicar_funcion_lista(lista_temp, funcion);
+  printf("[ ");
+  lista_recorrer(lista_temp);
+  printf("]\n");
+  lista_destruir(lista_temp);
 
-
-//   // aplicar_funcion_lista()
-// }
+}

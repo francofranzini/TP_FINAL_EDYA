@@ -23,7 +23,41 @@ Operacion interpretar_operacion(const char *buffer) {
   return FINISH;
 }
 
+int validar_es_lista(char* ptr){
+  if (*ptr != '[') {
+    return 0;
+  }
+  ptr++;
+  while (isspace(*ptr)) ptr++;
+  
+  while(*ptr != ']' && *ptr != '\0') {
+    // Saltar espacios
+    while (isspace(*ptr)) ptr++;
+    
+    // Verificar que hay un valor válido
+    if (!isdigit(*ptr)) return 0;
+    
+    // Saltar el valor
+    while (isdigit(*ptr)) ptr++;
+    
+    // Saltar espacios
+    while (isspace(*ptr)) ptr++;
+    
+    // Verificar si hay una coma o el cierre de la lista
+    if (*ptr == ',') {
+      ptr++;
+      while (isspace(*ptr)) ptr++;
+      if(*ptr == ']') return 0;
+    }
+    else if (*ptr != ']') return 0; 
+  }
+  
+  // Verificar cierre ']'
+  if (*ptr != ']') return 0;
+  ptr++;
 
+  return 1;
+}
 Operacion recibir_input(char buffer[]){
   fgets(buffer, 512, stdin);
   if(!validar_largo_input(buffer)) {
@@ -31,7 +65,11 @@ Operacion recibir_input(char buffer[]){
     limpiar_stdin();
     recibir_input(buffer);
   }
-
+  if(buffer[strlen(buffer) - 2] != ';') {
+    printf("El input debe terminar con ';'\n");
+    limpiar_stdin();
+    recibir_input(buffer);
+  }
   return interpretar_operacion(buffer);
 }
 
@@ -71,48 +109,69 @@ int validar_input_lista(char* buffer) {
   // Verificar que comienza con '['
   //Empieza el parsing de la lista
   
-  if (*ptr != '[') {
-    return 0;
-  }
+  if(!validar_es_lista(ptr)) return 0;
+  while(*ptr != ']') ptr++;
   ptr++;
-  while (isspace(*ptr)) ptr++;
   
-  while(*ptr != ']' && *ptr != '\0') {
-    // Saltar espacios
-    while (isspace(*ptr)) ptr++;
-    
-    // Verificar que hay un valor válido (número o palabra)
-    if (!isdigit(*ptr)) return 0;
-    
-    // Saltar el valor
-    while (isdigit(*ptr)) ptr++;
-    
-    // Saltar espacios
-    while (isspace(*ptr)) ptr++;
-    
-    // Verificar si hay una coma o el cierre de la lista
-    if (*ptr == ',') {
-      ptr++;
-      while (isspace(*ptr)) ptr++;
-      if(*ptr == ']') return 0;
-    }
-    else if (*ptr != ']') return 0; 
-  }
-  
-  // Verificar cierre ']'
-  if (*ptr != ']') return 0;
-  ptr++;
   // Saltar espacios
   while (isspace(*ptr)) ptr++;
 
   // Verificar terminación con ';'
-  if (*ptr != ';') {
-    return 0;
-  }
-  return 1;
+  return(*ptr == ';');
 }
 
+int validar_input_aplicar(char* buffer, Funciones* funciones, Listas* listas) {
+  char* ptr = buffer;
 
+  while (isspace(*ptr)) ptr++;
+
+  // Debe empezar con "apply"
+  if (strncmp(ptr, "apply", 5) != 0) return 0;
+  ptr += 5;
+
+  while (isspace(*ptr)) ptr++;
+
+  // Nombre de función válido
+  if (!isalnum(*ptr)) return 0;
+  int nombre_len = 0;
+  char nombre[32];
+  while (isalnum(*ptr)) {
+    if (nombre_len >= MAX_NAME - 1) return 0;
+    nombre[nombre_len] = *ptr;
+    nombre_len++;
+    ptr++;
+  }
+  nombre[nombre_len] = '\0';
+  if(funciones_buscar_funcion(funciones, nombre) == -1) return 0; //No existe la funcion
+
+  while (isspace(*ptr)) ptr++;
+
+  
+  int tipo = 0; // 1: lista nueva, 2: lista existente
+  if(*ptr == '['){
+    if(!validar_es_lista(ptr)) return 0;
+    while(*ptr != ']') ptr++;
+    ptr++;
+    tipo = 1; 
+  }
+  else{
+    if(!isalnum(*ptr)) return 0;
+    int nombre_len = 0;
+    char nombre[32];
+    while (isalnum(*ptr)) {
+      if (nombre_len >= MAX_NAME - 1) return 0;
+      nombre[nombre_len] = *ptr;
+      nombre_len++;
+      ptr++;
+    }
+    nombre[nombre_len] = '\0';
+    if(listas_buscar_lista(listas, nombre) == -1) return 0; // no existe la lista
+    tipo = 2;
+  }
+  while(isspace(*ptr))ptr++;
+  if(*ptr != ';') return 0; // debe terminar con ';'
+  return tipo;
+}
 int validar_input_funcion(char* buffer, Funciones* funciones) {
   char* ptr = buffer;
   while (isspace(*ptr)) ptr++;
@@ -186,8 +245,6 @@ int validar_input_funcion(char* buffer, Funciones* funciones) {
   if(*ptr != ';') return 0;
   return (nula == 0 && repite == 0); //encontro alguna funcion y cerro >
 }
-
-
 void asignar_input_lista(char* buffer, Lista* lista){
   char* ptr = buffer;
   while (isspace(*ptr)) ptr++;
@@ -228,9 +285,54 @@ void asignar_input_lista(char* buffer, Lista* lista){
     }
   }
 }
+void extraer_nombre_lista(char* buffer,char* nombre_lista){
+  char* ptr = buffer;
+  while (isspace(*ptr)) ptr++;
+  ptr += 5; // Saltar "apply"
+  while (isspace(*ptr)) ptr++;
+  while(isalnum(*ptr)) ptr++;
+  while (isspace(*ptr)) ptr++;
 
+  int i = 0;
+  while (isalnum(*ptr)) {
+    nombre_lista[i++] = *ptr++;
+  }
+  nombre_lista[i] = '\0';
+}
+void extraer_valores_lista(char* buffer, Lista* lista) {
+  char* ptr = buffer;
+  while(*ptr != '[') ptr++;
+  ptr++;
+  // Extraer valores hasta ']'
+  while (*ptr != ']' && *ptr != '\0') {
+    while (isspace(*ptr)) ptr++;
+    char value[32];
+    int j = 0;
+    while (isdigit(*ptr)) {
+      value[j++] = *ptr++;
+    }
+    value[j] = '\0'; //Terminar la cadena
 
-//COMPLETAR
+    lista_agregar_valor(lista, atoi(value));
+
+    while (isspace(*ptr)) ptr++;
+    if (*ptr == ',') {
+      ptr++;
+    }
+  }
+}
+void extraer_nombre_funcion(char* buffer, char* nombre_funcion) {
+  char* ptr = buffer;
+  while (isspace(*ptr)) ptr++;
+  ptr += 5; // Saltar "apply"
+  while (isspace(*ptr)) ptr++;
+
+  int i = 0;
+  while (isalnum(*ptr) && i < MAX_NAME - 1) {
+    nombre_funcion[i++] = *ptr++;
+  }
+  nombre_funcion[i] = '\0'; // Terminar la cadena
+}
 void asignar_input_funcion(char* buffer, Funciones* funciones,Funcion* funcion) {
   char* ptr = buffer;
   while (isspace(*ptr)) ptr++;
@@ -250,7 +352,7 @@ void asignar_input_funcion(char* buffer, Funciones* funciones,Funcion* funcion) 
   while(isspace(*ptr)) ptr++;
 
   /*
-    deff s = Si  Sd <Si Si Sd> 0i;
+    deff s = Si  Sd <Si Si Sd> Oi;
             [0   0  1  1  1   0]
   */
   int repitiendo = 0, bucle = 0;

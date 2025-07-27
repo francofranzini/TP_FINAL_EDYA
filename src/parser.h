@@ -38,6 +38,8 @@ void limpiar_stdin();
     - Valores: alfanuméricos separados por comas
     - Debe comenzar con '[' y terminar con ']' en los valores
     - Debe terminar con ';'
+  Si cualquiera de las condiciones falla, devuelve 0.
+  Si es válido, devuelve 1.
 */
 int validar_input_lista(char* buffer);
 
@@ -48,8 +50,38 @@ int validar_input_lista(char* buffer);
     - Nombre: alfanumérico
     - Expresión: puede contener números y letras, nombres de funciones
     - Debe terminar con ';'
+  Si cualquiera de las condiciones falla, devuelve 0.
+  Si es válido, devuelve 1.
 */
 int validar_input_funcion(char* buffer, Funciones* funciones);
+/*
+  Valida el input considerando que esta aplicando una función a una lista definida o a una lista nueva
+  Formato: apply nombre_funcion lista;
+    - Espacios en blanco permitidos
+    - Nombre de función: alfanumérico, debe existir
+    - Lista: puede ser un nombre de lista existente o una lista nueva entre corchetes
+    - Debe terminar con ';'
+    - Si es una lista nueva, debe estar entre corchetes y contener numeros separados por comas
+  Si cualquiera de las condiciones falla, devuelve 0.
+  Si es válido, devuelve 1 si es una lista nueva o 2 si es una lista existente.
+*/
+int validar_input_aplicar(char* buffer, Funciones* funciones, Listas* listas);
+
+/*
+  Buffer parseado para definir una lista solo con valores.
+  Asigna el input a una lista nueva o existente.
+*/
+void extraer_valores_lista(char* buffer, Lista* lista);
+/*
+  Buffer parseado y valido para aplicar una funcion a lista.
+*/
+void extraer_nombre_lista(char* buffer, char* nombre_lista);
+/*
+  Buffer parseado aplicar funcion a una lista.
+  Extrae el nombre de la función del buffer.
+*/
+void extraer_nombre_funcion(char* buffer, char* nombre_funcion);
+
 
   // Asignar el nombre de la lista
   // y sus valores, ingresados en el buffer

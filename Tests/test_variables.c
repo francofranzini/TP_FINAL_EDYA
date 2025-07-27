@@ -33,20 +33,8 @@ void test_listas_agregar_y_buscar() {
 
 	assert(listas->count == 1);
 
-
-	// Aseguramos que se insertó
-	unsigned k1 = listas->hash_function1(l1->nombre) % listas->size;
-	unsigned k2 = 1 + (listas->hash_function2(l1->nombre) % (listas->size - 1));
-	int i = 0;
-	unsigned idx = (k1 + i*k2) % listas->size;
-	while (i < listas->size) {
-			idx = (k1 + i * k2) % listas->size;
-			if (listas->buckets[idx] && strcmp(listas->buckets[idx]->nombre, "numeros") == 0) {
-					break;
-			}
-			i++;
-	}
-	assert(i < listas->size); 
+	int idx = listas_buscar_lista(listas, "numeros");
+	assert(idx != -1);
 
 	// Intentar redefinir la misma lista
 	Lista* l2 = lista_crear();
@@ -54,6 +42,23 @@ void test_listas_agregar_y_buscar() {
 	listas_agregar_lista(listas, l2); // debería imprimir error y no insertar
 	
 	assert(listas->buckets[idx] == l1);
+
+
+
+	Lista* l3 = lista_crear();
+	strcpy(l3->nombre, "test");
+	lista_agregar_valor(l3, 8);
+
+	assert(l3->lista->primero->dato == 8);
+
+	listas_agregar_lista(listas, l3);
+	assert(listas->count == 2);
+
+	int idx2 = listas_buscar_lista(listas, "test");
+	assert(idx2 != -1);
+	assert(strcmp(listas->buckets[idx2]->nombre, "test") == 0);
+
+	
 
 	lista_destruir(l2);
 	listas_destruir(listas);
@@ -65,7 +70,7 @@ void test_funciones_crear(){
 	assert(funciones->count == 6);
 	// assert(funciones->load_factor == 6.0/101.0);
 	// Verificar que las funciones base se hayan agregado
-	char* nombres_base[] = {"Si", "Di", "Dd", "Sd", "0i", "0d"};
+	char* nombres_base[] = {"Si", "Di", "Dd", "Sd", "Oi", "Od"};
 	for (int i = 0; i < 6; i++) {
 		unsigned k1 = funciones->hash_function1(nombres_base[i]) % funciones->size;
 		unsigned k2 = 1 + (funciones->hash_function2(nombres_base[i]) % (funciones->size - 1));
@@ -95,8 +100,8 @@ void test_funciones_buscar(){
 
 	assert(funciones_buscar_funcion(funciones, "Si") != -1);
 	assert(funciones_buscar_funcion(funciones, "Di") != -1);
-	assert(funciones_buscar_funcion(funciones, "0i") != -1);
-	assert(funciones_buscar_funcion(funciones, "0d") != -1);
+	assert(funciones_buscar_funcion(funciones, "Oi") != -1);
+	assert(funciones_buscar_funcion(funciones, "Od") != -1);
 	assert(funciones_buscar_funcion(funciones, "Dd") != -1);
 
 	assert(funciones_buscar_funcion(funciones, "f1") == -1);
@@ -162,7 +167,54 @@ void test_termina_repeticion() {
 	assert(!termina_repeticion(lista));
 	lista_destruir(lista);
 }
+void test_aplicar_funciones_base(){
+	Funciones* funciones = funciones_crear(101);
+	Lista* lista = lista_crear();
+	lista_agregar_valor(lista, 1);
+	lista_agregar_valor(lista, 2);
+	lista_agregar_valor(lista, 3);
+	
 
+
+	int idx = funciones_buscar_funcion(funciones, "Od");
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+
+	assert(lista->lista->ultimo->dato == 0);
+
+	idx = funciones_buscar_funcion(funciones, "Oi");
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+
+	assert(lista->lista->primero->dato == 0);
+
+	idx = funciones_buscar_funcion(funciones, "Dd");
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+	
+	
+	assert(lista->lista->ultimo->dato == 3);
+
+	idx = funciones_buscar_funcion(funciones, "Di");
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+
+	assert(lista->lista->primero->dato == 1);
+
+	idx = funciones_buscar_funcion(funciones, "Si");
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+
+	assert(lista->lista->primero->dato == 4);
+
+	idx = funciones_buscar_funcion(funciones, "Sd");
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+
+	assert(lista->lista->ultimo->dato == 6);
+
+	funciones_destruir(funciones);
+	lista_destruir(lista);
+
+}
 void test_aplicar_funcion_simple() {
 	Funciones* funciones = funciones_crear(101);
 	Lista* lista = lista_crear();
@@ -185,26 +237,158 @@ void test_aplicar_funcion_simple() {
 	aplicar_funcion_lista(lista, funciones->buckets[idx]);
 
 	assert(lista->lista->primero->dato == 7); // 
-	// assert(lista->lista->ultimo->dato == 2);  // 1 + 1 (Sd)
+	// assert(lista->lista->ultimo->dato == 2);  
 	lista_destruir(lista);
 	funciones_destruir(funciones);
 }
 void test_aplicar_funcion_repeticion() {
-  Funciones* funciones = funciones_crear(101);
-  Lista* lista = lista_crear();
-  lista_agregar_valor(lista, 0);
-  lista_agregar_valor(lista, 3);
+	Funciones* funciones = funciones_crear(101);
+	Lista* lista = lista_crear();
+	lista_agregar_valor(lista, 0);
+	lista_agregar_valor(lista, 3);
 
-  // repetirá Si hasta que primero == ultimo (es decir, 0 -> 3 con 3 Si)
-  char input[] = "deff f2 = <Si>;";
-  definir_funcion(input, funciones);
-  int idx = funciones_buscar_funcion(funciones, "f2");
-  aplicar_funcion_lista(lista, funciones->buckets[idx]);
+	// repetirá Si hasta que primero == ultimo (es decir, 0 -> 3 con 3 Si)
 
-  assert(lista->lista->primero->dato == lista->lista->ultimo->dato);
-  lista_destruir(lista);
-  funciones_destruir(funciones);
+	char input[512];
+	strcpy(input, "deff f2 = <Si>;");
+	definir_funcion(input, funciones);
+	int idx = funciones_buscar_funcion(funciones, "f2");
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+
+	assert(lista->lista->primero->dato == lista->lista->ultimo->dato);
+	
+	// lista = [3,3];
+
+	lista_agregar_valor(lista, 0);
+	lista_agregar_valor(lista, 1);
+	lista_agregar_valor(lista, 2);
+	//lista = [3,3,0,1,2]
+	strcpy(input, "deff Mi = Oi <Si> Dd;");
+
+	definir_funcion(input ,funciones);
+	idx = funciones_buscar_funcion(funciones, "Mi");
+	assert(idx != -1);
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+	// lista = [2,3,3,0,1]
+	assert(lista->lista->primero->dato == 2);
+	assert(lista->lista->ultimo->dato == 1);
+
+
+	strcpy(input, "deff DDi = Od <Sd> Mi;");
+
+	definir_funcion(input ,funciones);
+	idx = funciones_buscar_funcion(funciones, "DDi");
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+
+	//lista = [2,2,3,3,0,1]
+	assert(lista->lista->primero->dato == 2);
+	assert(lista->lista->primero->sig->dato == 2);
+	assert(lista->lista->primero->sig->sig->dato == 3);
+	assert(lista->lista->ultimo->ant->dato == 0);
+	assert(lista->lista->ultimo->dato == 1);
+
+
+	strcpy(input, "deff Md = Od <Sd> Di;");
+	definir_funcion(input, funciones);
+
+	strcpy(input, "deff S5i = Si Si Si Si Si;");
+	definir_funcion(input, funciones);	
+
+	idx = funciones_buscar_funcion(funciones, "S5i");
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+	
+	assert(lista->lista->primero->dato == 7);
+
+	strcpy(input, "deff 2d1i = <Sd Sd Si>;");
+	definir_funcion(input, funciones);
+	idx = funciones_buscar_funcion(funciones, "2d1i");
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+
+	//lista = [13,2,3,3,0,13]
+	assert(lista->lista->primero->dato == lista->lista->ultimo->dato);
+	assert(lista->lista->primero->dato == 13);
+
+	idx = funciones_buscar_funcion(funciones, "Dd");
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+	idx = funciones_buscar_funcion(funciones, "Di");
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+
+	//lista = [2,3,3,0]
+	assert(lista->lista->ultimo->dato == 0);
+	assert(lista->lista->primero->dato == 2);
+
+	strcpy(input,"deff S1 = Md Oi Mi Oi;");
+	definir_funcion(input, funciones);
+
+	strcpy(input,"deff S2 = <Si Md Md Si Mi Mi>;");
+	definir_funcion(input, funciones);
+
+	strcpy(input,"deff S3 = Dd Di Md;");
+	definir_funcion(input, funciones);
+
+	strcpy(input,"deff S = S1 S2 S3;");
+	definir_funcion(input, funciones);
+
+	idx = funciones_buscar_funcion(funciones,"S");
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+
+	assert(lista->lista->ultimo->dato == 2);
+	assert(lista->lista->primero->dato == 0);
+
+
+	//lista = [0,3,3,2]
+	lista_agregar_valor(lista, 7);
+	lista_agregar_valor(lista, 15);
+
+	idx = funciones_buscar_funcion(funciones,"Mi");
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+
+	assert(lista->lista->primero->dato == 15);
+	assert(lista->lista->ultimo->dato == 7);
+
+	//lista = [15, 0, 3, 3, 2, 7]
+
+	idx = funciones_buscar_funcion(funciones,"S");
+	aplicar_funcion_lista(lista, funciones->buckets[idx]);
+
+	assert(lista->lista->ultimo->dato == 15);
+	assert(lista->lista->primero->dato == 7);
+
+	lista_destruir(lista);
+	funciones_destruir(funciones);
+
 }
+void test_lista_copiar() {
+	Lista* origen = lista_crear();
+	Lista* destino = lista_crear();
+
+	lista_agregar_valor(origen, 10);
+	lista_agregar_valor(origen, 20);
+	lista_agregar_valor(origen, 30);
+
+	lista_copiar(origen, destino);
+
+	// Verifica que los elementos están en el mismo orden (si usaste agregar_ultimo)
+	DNodo* n1 = destino->lista->primero;
+	assert(n1 != NULL && n1->dato == 10);
+
+	DNodo* n2 = n1->sig;
+	assert(n2 != NULL && n2->dato == 20);
+
+	DNodo* n3 = n2->sig;
+	assert(n3 != NULL && n3->dato == 30);
+
+	assert(n3->sig == NULL);
+
+	n1 = origen->lista->primero;
+	assert(n1 != NULL && n1->dato == 10);
+	assert(n1->sig->dato == 20);
+	assert(n1->sig->sig->dato == 30);
+
+	lista_destruir(origen);
+	lista_destruir(destino);
+}
+
 
 int main() {
 	test_lista_crear_y_agregar();
@@ -217,6 +401,9 @@ int main() {
 	test_funcion_agregar();
 	test_termina_repeticion();
 	test_aplicar_funcion_simple();
+	test_aplicar_funcion_repeticion();
+	test_aplicar_funciones_base();
+	// test_lista_copiar();
 
 	//gcc -o test_variables ./test_variables.c ../src/DList/dlist.c ../src/variables.c ../src/operaciones.c ../src/parser.c
 	printf("Todos los tests pasaron correctamente\n");

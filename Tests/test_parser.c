@@ -89,12 +89,12 @@ void test_validar_input_funcion() {
   
   // Casos válidos
   
-  assert(validar_input_funcion("deff f1 = Si <Dd Di> Sd 0i;", funciones) == 1);
+  assert(validar_input_funcion("deff f1 = Si <Dd Di> Sd Oi;", funciones) == 1);
   assert(validar_input_funcion("deff suma = Si Sd;", funciones) == 1);
   assert(validar_input_funcion("deff f1 = Si <Sd>;", funciones) == 1);
   assert(validar_input_funcion("deff f1 = Si <Sd Sd Sd Sd>;", funciones) == 1);
   assert(validar_input_funcion("deff f1 = Si <Sd>;", funciones) == 1);
-  assert(validar_input_funcion("deff Suma23 = Si <0i> <Dd>;", funciones) == 1);
+  assert(validar_input_funcion("deff Suma23 = Si <Oi> <Dd>;", funciones) == 1);
   assert(validar_input_funcion("deff   nombreFunc   =   Si   Sd ;", funciones) == 1);
   assert(validar_input_funcion("deff x1 = Si ;", funciones) == 1);
   assert(validar_input_funcion("deff 123suma = Si;", funciones) == 1);                
@@ -102,7 +102,7 @@ void test_validar_input_funcion() {
   // Casos inválidos
   assert(validar_input_funcion("deff f1 = Si <S1 S2 S3 S4>;", funciones) == 0);
   assert(validar_input_funcion("deff f1 = Si <S1 S2 S3 S4>;", funciones) == 0);
-  assert(validar_input_funcion("deff Suma23 = Si <0i  Dd;", funciones) == 0);
+  assert(validar_input_funcion("deff Suma23 = Si <Oi  Dd;", funciones) == 0);
   assert(validar_input_funcion("def suma = Si Sd;", funciones) == 0);                 // "def"
   assert(validar_input_funcion("deff = Si Sd;", funciones) == 0);                     // falta nombre
   assert(validar_input_funcion("deff suma Si Sd;", funciones) == 0);                  // falta '='
@@ -110,7 +110,7 @@ void test_validar_input_funcion() {
   assert(validar_input_funcion("deff suma = Si Sd", funciones) == 0);                 // sin ';' final
   assert(validar_input_funcion("deff suma =  Si> Sd;", funciones) == 0);              // cierra > sin <
   assert(validar_input_funcion("deff suma = ; Si Sd;", funciones) == 0);              // función después de ';'
-  assert(validar_input_funcion("deff suma = Si 0i Sd &;", funciones) == 0);           // símbolo inválido al final
+  assert(validar_input_funcion("deff suma = Si Oi Sd &;", funciones) == 0);           // símbolo inválido al final
   assert(validar_input_funcion("deff esteesunnombremuylargoparaprobarquenoguarda = Si Sd;", funciones) == 0);
   funciones_destruir(funciones);
 }
@@ -118,7 +118,7 @@ void test_asignar_input_funcion(){
   Funciones* funciones = funciones_crear(101);
 
   char input[512];
-  strcpy(input,"deff f1 = Si 0i;");
+  strcpy(input,"deff f1 = Si Oi;");
   Funcion* f1 = funcion_crear();
 
   asignar_input_funcion(input, funciones, f1);
@@ -126,18 +126,18 @@ void test_asignar_input_funcion(){
   funciones_agregar_funcion(funciones, f1);
 
   assert(strcmp(f1->pasos[0]->nombre,"Si") == 0);
-  assert(strcmp(f1->pasos[1]->nombre,"0i") == 0);
+  assert(strcmp(f1->pasos[1]->nombre,"Oi") == 0);
   assert(f1->repite[0] == 0);
   assert(f1->repite[1] == 0);
 
-  strcpy(input, "deff f2 = Si <0i 0i f1> f1;");
+  strcpy(input, "deff f2 = Si <Oi Oi f1> f1;");
   Funcion* f2 = funcion_crear();
 
   asignar_input_funcion(input, funciones, f2);
 
   assert(strcmp(f2->pasos[0]->nombre, "Si") == 0);
-  assert(strcmp(f2->pasos[1]->nombre, "0i") == 0);
-  assert(strcmp(f2->pasos[2]->nombre, "0i") == 0);
+  assert(strcmp(f2->pasos[1]->nombre, "Oi") == 0);
+  assert(strcmp(f2->pasos[2]->nombre, "Oi") == 0);
   assert(strcmp(f2->pasos[3]->nombre, "f1") == 0);
   assert(strcmp(f2->pasos[4]->nombre, "f1") == 0);
 
@@ -168,6 +168,116 @@ void test_asignar_input_funcion(){
 
   funciones_destruir(funciones);
 }
+void test_validar_input_aplicar() {
+  Funciones* funciones = funciones_crear(101);
+  Listas* listas = listas_crear(101);
+
+  Funcion* f1 = funcion_crear();
+  strcpy(f1->nombre, "f1");
+  funciones_agregar_funcion(funciones, f1);
+
+  Funcion* f123 = funcion_crear();
+  strcpy(f123->nombre, "f123");
+  funciones_agregar_funcion(funciones, f123);
+
+  Funcion* a123 = funcion_crear();
+  strcpy(a123->nombre, "a123");
+  funciones_agregar_funcion(funciones, a123);
+
+  Lista* l1 = lista_crear();
+  strcpy(l1->nombre, "L1");
+  listas_agregar_lista(listas, l1);
+
+  Lista* lista45 = lista_crear();
+  strcpy(lista45->nombre, "Lista45");
+  listas_agregar_lista(listas, lista45);
+  Lista* b2 = lista_crear();
+  strcpy(b2->nombre, "b2");
+  listas_agregar_lista(listas, b2);
+
+  // Casos válidos
+  assert(validar_input_aplicar("apply f1 L1;", funciones, listas) == 2);
+  assert(validar_input_aplicar("apply f123 Lista45;", funciones, listas) == 2);
+  assert(validar_input_aplicar("apply f1 [1,2,3];", funciones, listas) == 1);
+  assert(validar_input_aplicar(" apply   f1   [  1 , 2 , 3  ] ; ", funciones, listas) == 1);
+  assert(validar_input_aplicar("apply f1 [];", funciones, listas) == 1);
+  assert(validar_input_aplicar("apply a123 b2;", funciones, listas) == 2);
+  assert(validar_input_aplicar("apply a123 [100];", funciones, listas) == 1);
+
+  // Casos inválidos
+  assert(validar_input_aplicar("apply;", funciones, listas) == 0); // Falta todo
+  assert(validar_input_aplicar("apply f1;", funciones, listas) == 0); // Falta lista
+  assert(validar_input_aplicar("apply f1 [1,];", funciones, listas) == 0); // Coma final
+  assert(validar_input_aplicar("apply f1 [-1,2];", funciones, listas) == 0); // Número negativo
+  assert(validar_input_aplicar("apply f1 [1 2];", funciones, listas) == 0); // Falta coma
+  assert(validar_input_aplicar("apply fx [1,2];", funciones, listas) == 0); // Función no existe
+  assert(validar_input_aplicar("apply f1 listax;", funciones, listas) == 0); // Lista no existe
+  assert(validar_input_aplicar("apply f1 [1,,2];", funciones, listas) == 0); // Coma doble
+
+  listas_destruir(listas);
+  funciones_destruir(funciones);
+}
+void test_lista_desde_buffer_simple() {
+    Lista* lista = lista_crear();
+    char buffer[512];
+    strcpy(buffer,"apply f5 [1,2,3];");
+    extraer_valores_lista(buffer, lista);
+
+    DNodo* nodo = lista->lista->primero;
+    assert(nodo != NULL && nodo->dato == 1);
+    nodo = nodo->sig;
+    assert(nodo != NULL && nodo->dato == 2);
+    nodo = nodo->sig;
+    assert(nodo != NULL && nodo->dato == 3);
+    nodo = nodo->sig;
+    assert(nodo == NULL);
+    lista_destruir(lista);
+
+    lista = lista_crear();
+    strcpy(buffer,"apply f7 [];");
+    extraer_valores_lista(buffer, lista);
+    assert(lista->lista->primero == NULL); // Lista vacía
+    lista_destruir(lista);
+
+    lista = lista_crear();
+    strcpy(buffer,"apply f7 [111, 222, 444];");
+    extraer_valores_lista(buffer, lista);
+    assert(lista->lista->primero->dato == 111);
+    assert(lista->lista->ultimo->dato == 444);
+
+    lista_destruir(lista);
+}
+void test_extraer_nombre_funcion() {
+    char buffer[512];
+    strcpy(buffer, "apply f1 [1,2,3];");
+    char nombre_funcion[32];
+    extraer_nombre_funcion(buffer, nombre_funcion);
+    assert(strcmp(nombre_funcion, "f1") == 0);
+
+    strcpy(buffer, "apply otraFuncion [4,5];");
+    extraer_nombre_funcion(buffer, nombre_funcion);
+    assert(strcmp(nombre_funcion, "otraFuncion") == 0);
+
+    strcpy(buffer, "apply f123 [6];");
+    extraer_nombre_funcion(buffer, nombre_funcion);
+    assert(strcmp(nombre_funcion, "f123") == 0);
+}
+void test_extraer_nombre_lista() {
+    char buffer[512];
+    strcpy(buffer, "apply f1 L1;");
+    char nombre_lista[32];
+    extraer_nombre_lista(buffer, nombre_lista);
+    assert(strcmp(nombre_lista, "L1") == 0);
+
+    strcpy(buffer, "apply otraLista L5;");
+    extraer_nombre_lista(buffer, nombre_lista);
+    assert(strcmp(nombre_lista, "L5") == 0);
+
+    strcpy(buffer, "apply lista123 L9;");
+    extraer_nombre_lista(buffer, nombre_lista);
+    assert(strcmp(nombre_lista, "L9") == 0);
+}
+
 
 int main() {
     test_validar_largo_input();
@@ -176,7 +286,10 @@ int main() {
     test_asignar_input_lista();
     test_validar_input_funcion();
     test_asignar_input_funcion();
-//  a
+    test_validar_input_aplicar();
+    test_lista_desde_buffer_simple();
+    test_extraer_nombre_funcion();
+    // gcc -o test_parser ./test_parser.c ../src/parser.c ../src/variables.c ../src/DList/dlist.c
     printf("Todos los tests de parser pasaron correctamente.\n");
     return 0;
 }

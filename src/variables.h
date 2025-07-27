@@ -44,7 +44,12 @@ unsigned KRHash(char* key);
 
 Listas* listas_crear();
 void listas_destruir(Listas* listas);
+int listas_buscar_lista(Listas* listas, char* nombre);
+void listas_agregar_lista(Listas* listas, Lista* lista);
 
+
+void funciones_agregar_funcion(Funciones* funciones, Funcion* funcion);
+void funcion_agregar_funcion(Funcion* funcion, Funcion* f_agregar);
 Funciones* funciones_crear();
 void funciones_destruir(Funciones* funciones);
 int funciones_buscar_funcion(Funciones* funciones, char* nombre);
@@ -57,18 +62,17 @@ void funcion_destruir(Funcion* funcion);
 
 void lista_destruir(Lista* lista);
 void lista_agregar_valor(Lista* lista, int value);
+void lista_copiar(Lista* origen, Lista* destino);
+void lista_recorrer(Lista* lista);
 
 
-void listas_agregar_lista(Listas* listas, Lista* lista);
-void funciones_agregar_funcion(Funciones* funciones, Funcion* funcion);
-void funcion_agregar_funcion(Funcion* funcion, Funcion* f_agregar);
 
 void dlist_sumar_uno_inicio(DList* lista);
 
 int es_funcion_base(Funcion* funcion);
 int termina_repeticion(Lista* lista);
-int aplicar_funcion_lista_base(Lista* lista,Funcion* funcion);
-int aplicar_funcion_lista(Lista* lista, Funcion* funcion);
+void aplicar_funcion_lista_base(Lista* lista,Funcion* funcion);
+void aplicar_funcion_lista(Lista* lista, Funcion* funcion);
 
 
 #endif /* __VARIABLES_H__ */

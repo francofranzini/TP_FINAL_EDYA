@@ -9,7 +9,7 @@
 
 void definir_lista(char* buffer, Listas* listas);
 void definir_funcion(char* buffer, Funciones* funciones);
-void aplicar_funcion(char* buffer, Funciones* funciones);
+void aplicar_funcion(char* buffer, Funciones* funciones, Listas* listas);
 void buscar_funciones(char* buffer, Listas* listas, Funciones* funciones);
 
 
