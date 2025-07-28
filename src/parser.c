@@ -9,12 +9,8 @@ int input_es_valido(char* buffer) {
   char* pto_coma = strchr(buffer, ';');
   if (!pto_coma) return 0;
 
-  
-  pto_coma++;
-  while (*pto_coma != '\0') {
-    if (!isspace(*pto_coma)) return 0;
-    pto_coma++;
-  }
+  //Buscar el punto y coma al final
+  if(*(buffer + strlen(buffer) - 2) != ';') return 0;
 
   return 1;
 }

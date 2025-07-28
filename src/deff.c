@@ -35,8 +35,8 @@ int validar_input_funcion(char* buffer, Funciones* funciones) {
   
   int nula = 1, repite = 0, pasos = 0;
   while(*ptr != ';' && *ptr != '\0'){
-    if(pasos++ == 20){
-      printf("Puede componer hasta 20 funciones en una sola declaracion");
+    if(pasos++ == 30){
+      printf("Puede componer hasta 30 funciones en una sola declaracion");
       return 0;
     } 
     if(nula == 1) nula = 0;

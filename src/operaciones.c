@@ -61,6 +61,19 @@ void buscar_funcion(char* buffer, Funciones* funciones, Listas* listas){
 
   Lista* entrada[N],  *salida[N];
   asignar_input_search(buffer, listas, entrada, salida);
-
+  int max_composicion = 0;
+  Funcion* funcion_buscada = NULL;
+  BFS(funciones, entrada, salida, N, &funcion_buscada);
+  if(funcion_buscada != NULL){
+    printf("Funcion encontrada: %s\n", funcion_buscada->nombre);
+    for(int i = 0; i<funcion_buscada->pasos_cantidad; i++){
+      printf("%s ", funcion_buscada->pasos[i]->nombre);
+    }
+    printf("\n");
+  }
+  else{
+    printf("No se encontró una función que cumpla con los criterios.\n");
+  }
+  funcion_destruir(funcion_buscada);
 
 }

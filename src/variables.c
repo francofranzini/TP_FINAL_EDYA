@@ -108,6 +108,14 @@ void lista_recorrer(Lista* lista) {
     nodo = nodo->sig;
   }
 }
+int lista_iguales(Lista* A, Lista* B) {
+  DNodo *a = A->lista->primero, *b = B->lista->primero;
+  while (a && b) {
+    if (a->dato != b->dato) return 0;
+    a = a->sig; b = b->sig;
+  }
+  return (a == NULL && b == NULL);
+}
 
 void agregar_funciones_base(Funciones* funciones) {
   Funcion* si = funcion_crear();
@@ -201,7 +209,7 @@ void funciones_agregar_funcion(Funciones* funciones, Funcion* funcion){
 Funcion* funcion_crear(){
   Funcion* nueva_funcion = malloc(sizeof(Funcion));
   assert(nueva_funcion != NULL);
-  for(int i = 0; i<20; i++){
+  for(int i = 0; i<30; i++){
     nueva_funcion->pasos[i] = NULL;
     nueva_funcion->repite[i] = 0;
   }
@@ -215,5 +223,53 @@ void funcion_agregar_funcion(Funcion* funcion, Funcion* f_agregar){
 
 void funcion_destruir(Funcion* funcion){
   free(funcion);
+}
+void funcion_copiar(Funcion* origen, Funcion* destino){
+  for(int k = 0; k < origen->pasos_cantidad; k++){
+    funcion_agregar_funcion(destino, origen->pasos[k]);
+  }
+}
+
+ColaFuncion* cola_funcion_crear(){
+  ColaFuncion* cola = malloc(sizeof(ColaFuncion));
+  cola->frente = NULL;
+  cola->fondo = NULL;
+  return cola;
+}
+void cola_funcion_encolar(ColaFuncion* cola, Funcion* funcion){
+  NodoFuncion* nuevo_nodo = malloc(sizeof(NodoFuncion));
+  nuevo_nodo->funcion = funcion;
+  nuevo_nodo->sig = NULL;
+
+  if(cola->fondo == NULL) {
+    cola->frente = nuevo_nodo;
+    cola->fondo = nuevo_nodo;
+  } else {
+    cola->fondo->sig = nuevo_nodo;
+    cola->fondo = nuevo_nodo;
+  }
+}
+Funcion* cola_funcion_desencolar(ColaFuncion* cola) {
+  if (cola->frente == NULL) return NULL; // Cola vacía
+
+  NodoFuncion* nodo = cola->frente;
+  Funcion* funcion = nodo->funcion;
+
+  cola->frente = nodo->sig;
+  if (cola->frente == NULL) {
+    cola->fondo = NULL;
+  }
+  free(nodo);
+  return funcion;
+}
+int cola_funcion_vacia(ColaFuncion* cola) {
+  return (cola->frente == NULL);
+}
+void cola_funcion_destruir(ColaFuncion* cola){
+  while(!cola_funcion_vacia(cola)){
+    Funcion* f = cola_funcion_desencolar(cola);
+    funcion_destruir(f);
+  }
+  free(cola);
 }
 

@@ -188,9 +188,86 @@ void test_lista_copiar() {
 	lista_destruir(origen);
 	lista_destruir(destino);
 }
+void test_cola_vacia_al_crear() {
+    ColaFuncion* cola = cola_funcion_crear();
+    assert(cola_funcion_vacia(cola) == 1);
+    // destruir cola si existe función
+    free(cola);
+}
+
+void test_desencolar_en_cola_vacia() {
+	ColaFuncion* cola = cola_funcion_crear();
+	assert(cola_funcion_desencolar(cola) == NULL);
+	free(cola);
+}
+
+void test_encolar_y_desencolar_un_elemento() {
+	ColaFuncion* cola = cola_funcion_crear();
+	Funcion* f1 = funcion_crear();
+
+	cola_funcion_encolar(cola, f1);
+	assert(cola_funcion_vacia(cola) == 0);
+
+	Funcion* d = cola_funcion_desencolar(cola);
+	assert(d == f1);
+	assert(cola_funcion_vacia(cola) == 1);
+
+	funcion_destruir(f1);
+	free(cola);
+}
+
+void test_fifo_multiple_elementos() {
+	ColaFuncion* cola = cola_funcion_crear();
+	Funcion* f1 = funcion_crear();
+	Funcion* f2 = funcion_crear();
+	Funcion* f3 = funcion_crear();
+
+	cola_funcion_encolar(cola, f1);
+	cola_funcion_encolar(cola, f2);
+	cola_funcion_encolar(cola, f3);
+
+	assert(cola_funcion_vacia(cola) == 0);
+
+	assert(cola_funcion_desencolar(cola) == f1);
+	assert(cola_funcion_desencolar(cola) == f2);
+	assert(cola_funcion_desencolar(cola) == f3);
+	assert(cola_funcion_desencolar(cola) == NULL);
+	assert(cola_funcion_vacia(cola) == 1);
+
+	funcion_destruir(f1);
+	funcion_destruir(f2);
+	funcion_destruir(f3);
+	free(cola);
+}
+
+void test_encolar_despues_de_vaciar() {
+	ColaFuncion* cola = cola_funcion_crear();
+	Funcion* f1 = funcion_crear();
+	Funcion* f2 = funcion_crear();
+
+	// primer ciclo
+	cola_funcion_encolar(cola, f1);
+	assert(cola_funcion_desencolar(cola) == f1);
+	assert(cola_funcion_vacia(cola));
+
+	// segundo ciclo
+	cola_funcion_encolar(cola, f2);
+	assert(cola_funcion_vacia(cola) == 0);
+	assert(cola_funcion_desencolar(cola) == f2);
+	assert(cola_funcion_vacia(cola) == 1);
+
+	funcion_destruir(f1);
+	funcion_destruir(f2);
+	free(cola);
+}
 
 
 int main() {
+	test_cola_vacia_al_crear();
+	test_desencolar_en_cola_vacia();
+	test_encolar_y_desencolar_un_elemento();
+	test_fifo_multiple_elementos();
+	test_encolar_despues_de_vaciar();
 	test_lista_crear_y_agregar();
 	test_listas_agregar_y_buscar();
 	test_funciones_crear();
