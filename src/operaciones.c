@@ -29,9 +29,10 @@ void aplicar_funcion(char* buffer, Funciones* funciones, Listas* listas) {
   char nombre_funcion[32];
   extraer_nombre_funcion(buffer, nombre_funcion);
   int idx_funcion = funciones_buscar_funcion(funciones, nombre_funcion);
-  assert(idx_funcion != -1);
+
   Funcion* funcion = funciones->buckets[idx_funcion];
   Lista* lista_temp = lista_crear();
+
   if(tipo == 1){
     extraer_valores_lista(buffer, lista_temp);
   }
@@ -52,5 +53,11 @@ void aplicar_funcion(char* buffer, Funciones* funciones, Listas* listas) {
     printf("]\n");
   }
   lista_destruir(lista_temp);
+
+}
+void buscar_funcion(char* buffer, Funciones* funciones, Listas* listas){
+  if(!validar_input_search(buffer, listas)) return;
+
+  int N;
 
 }

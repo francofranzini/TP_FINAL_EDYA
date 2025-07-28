@@ -6,6 +6,8 @@
 
 #include "./DList/dlist.h"
 #include <string.h>
+#include <ctype.h>
+#include <stdio.h>
 
 typedef int (*FuncionHash)(char* nombre);
 typedef void (*FuncionDestructora)(void* value);
@@ -69,10 +71,7 @@ void lista_recorrer(Lista* lista);
 
 void dlist_sumar_uno_inicio(DList* lista);
 
-int es_funcion_base(Funcion* funcion);
-int termina_repeticion(Lista* lista);
-void aplicar_funcion_lista_base(Lista* lista,Funcion* funcion);
-void aplicar_funcion_lista(Lista* lista, Funcion* funcion, int* overflow);
+
 
 
 #endif /* __VARIABLES_H__ */

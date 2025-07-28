@@ -24,6 +24,7 @@ void test_definir_lista_exitosa() {
   listas_agregar_lista(listas, lista);
   assert(listas->count == 1);
 
+  
   listas_destruir(listas);
 }
 
@@ -78,6 +79,7 @@ void test_definir_funcion_exitosa(){
   assert(funciones->buckets[k1]->pasos_cantidad == 5);
   assert(funciones->buckets[k2]->pasos_cantidad == 5);
 
+  funciones_destruir(funciones);
 
 }
 
@@ -130,6 +132,8 @@ void test_aplicar_funcion_overflow() {
   Listas* listas = listas_crear(101);
   char buffer[512];
 
+  int overflow = 0;
+
   strcpy(buffer, "deff f1 = Si Si;");
   definir_funcion(buffer, funciones);
 
@@ -143,14 +147,13 @@ void test_aplicar_funcion_overflow() {
   listas_destruir(listas);
 }
 
-
 int main() {
   test_definir_funcion_exitosa();
   test_definir_lista_exitosa();
   test_definir_lista_fallido();
   test_aplicar_funcion();
   test_aplicar_funcion_overflow();
-  // gcc -o test_operaciones ./test_operaciones.c ../src/operaciones.c ../src/variables.c ../src/parser.c ../src/DList/dlist.c
+  //gcc -o test_operaciones ./test_operaciones.c ../src/apply.c ../src/variables.c ../src/DList/dlist.c ../src/deff.c ../src/defl.c ../src/operaciones.c ../src/parser.c ../src/search.c
   printf("Todos los tests de definir_lista pasaron correctamente.\n");
   return 0;
 }

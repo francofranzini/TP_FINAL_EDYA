@@ -3,7 +3,10 @@
 #include "parser.h"
 #include "operaciones.h"
 
-
+void liberar_variables( Listas* listas, Funciones* funciones){
+  listas_destruir(listas);
+  funciones_destruir(funciones);
+}
 
 void iniciar_programa(Listas* listas, Funciones* funciones) {
     printf("Bienvenido al programa de funciones de lista.\n");
@@ -32,7 +35,7 @@ void iniciar_programa(Listas* listas, Funciones* funciones) {
           aplicar_funcion(buffer, funciones, listas);
           break;
         case SEARCH:
-          //buscar_funciones_lista(buffer, variables);
+          buscar_funcion(buffer, funciones, listas);
           break;
       }
       operacion = recibir_input(buffer);
@@ -46,7 +49,7 @@ int main(){
   Funciones* funciones = funciones_crear(101);
 
   iniciar_programa(listas, funciones);
-  // liberar_variables(listas, funciones);
+  liberar_variables(listas, funciones);
 
   return 0;
 }
