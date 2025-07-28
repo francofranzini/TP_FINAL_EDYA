@@ -12,7 +12,7 @@ void asignar_input_funcion(char* buffer, Funciones* funciones,Funcion* funcion);
 
 // Valida el input considerando que esta definiendo una función
 /*
-    Formato: deff nombre = expresion;
+    Formato: deff nombre = [i1, i2, ..., in] donde i es un natural
     - Espacios en blanco permitidos
     - Nombre: alfanumérico
     - Expresión: puede contener números y letras, nombres de funciones

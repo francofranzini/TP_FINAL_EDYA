@@ -2,7 +2,7 @@
 
 # Compilador y flags
 CC       := gcc
-CFLAGS   := -Wall -Wextra -I./src -I./src/DList
+CFLAGS   := -Wall -Wextra -I./src -I./src/DList -std=c99 -g
 
 # Directorios
 SRCDIR   := src
