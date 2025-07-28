@@ -56,8 +56,11 @@ void aplicar_funcion(char* buffer, Funciones* funciones, Listas* listas) {
 
 }
 void buscar_funcion(char* buffer, Funciones* funciones, Listas* listas){
-  if(!validar_input_search(buffer, listas)) return;
+  int N = validar_input_search(buffer, listas);
+  if(!N) return;
 
-  int N;
+  Lista* entrada[N],  *salida[N];
+  asignar_input_search(buffer, listas, entrada, salida);
+
 
 }
