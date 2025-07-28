@@ -37,6 +37,9 @@ void iniciar_programa(Listas* listas, Funciones* funciones) {
         case SEARCH:
           buscar_funcion(buffer, funciones, listas);
           break;
+        case FINISH:
+          printf("Saliendo del programa.\n");
+          break;
       }
       operacion = recibir_input(buffer);
     }

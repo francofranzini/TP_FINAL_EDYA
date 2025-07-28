@@ -29,17 +29,16 @@ Operacion interpretar_operacion(const char *buffer) {
 
   return FINISH;
 }
-Operacion recibir_input(char buffer[]){
-  fgets(buffer, MAX_INPUT, stdin);
-  if(!input_es_valido(buffer)){
-    printf("Input inválido. Debe tener hasta 512 caracteres y terminar en ';'\n");
-    limpiar_stdin();
-    recibir_input(buffer);
+Operacion recibir_input(char buffer[]) {
+  while (1) {
+    fgets(buffer, MAX_INPUT, stdin);
+    if (!input_es_valido(buffer)) {
+      printf("Input inválido. Debe tener hasta 512 caracteres y terminar en ';'\n");
+      limpiar_stdin();
+    } else {
+      return interpretar_operacion(buffer);
+    }
   }
-  else{
-    return interpretar_operacion(buffer);
-  }
-  
 }
 int validar_es_lista(char* ptr){
   if (*ptr != '[') {

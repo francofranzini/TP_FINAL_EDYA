@@ -5,7 +5,6 @@
 #include "../src/variables.h"
 
 void test_definir_lista_exitosa() {
-  int size = 101;
   Listas* listas = listas_crear(101);
   assert(listas->size == 101);
   assert(listas->count == 0);
@@ -131,8 +130,6 @@ void test_aplicar_funcion_overflow() {
   Funciones* funciones = funciones_crear(101);
   Listas* listas = listas_crear(101);
   char buffer[512];
-
-  int overflow = 0;
 
   strcpy(buffer, "deff f1 = Si Si;");
   definir_funcion(buffer, funciones);

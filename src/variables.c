@@ -73,6 +73,7 @@ int listas_buscar_lista(Listas* listas, char* nombre){
     
     j++;
   }
+  return -1;
 }
 
 Lista* lista_crear(){
@@ -170,9 +171,9 @@ int funciones_buscar_funcion(Funciones* funciones, char* nombre){
     if(funciones->buckets[idx] == NULL) return -1;
 
     if(strcmp(funciones->buckets[idx]->nombre, nombre) == 0) return idx;
-    
     j++;
   }
+  return -1;
 }
 
 void funciones_destruir(Funciones* funciones){

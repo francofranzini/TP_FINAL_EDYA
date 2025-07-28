@@ -61,7 +61,6 @@ void buscar_funcion(char* buffer, Funciones* funciones, Listas* listas){
 
   Lista* entrada[N],  *salida[N];
   asignar_input_search(buffer, listas, entrada, salida);
-  int max_composicion = 0;
   Funcion* funcion_buscada = NULL;
   BFS(funciones, entrada, salida, N, &funcion_buscada);
   if(funcion_buscada != NULL){
