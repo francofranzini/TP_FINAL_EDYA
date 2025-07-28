@@ -51,7 +51,7 @@ int validar_es_lista(char* ptr){
   while (isspace(*ptr)) ptr++;
   
   while(*ptr != ']' && *ptr != '\0') {
-    // Saltar espacios
+
     while (isspace(*ptr)) ptr++;
     
     // Verificar que hay un valor válido

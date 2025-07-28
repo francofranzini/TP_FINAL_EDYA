@@ -55,6 +55,7 @@ int main(){
   Funciones* funciones = funciones_crear(101);
 
   iniciar_programa(listas, funciones);
+  
   liberar_variables(listas, funciones);
 
   return 0;

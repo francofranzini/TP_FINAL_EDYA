@@ -72,7 +72,7 @@ int validar_input_funcion(char* buffer, Funciones* funciones) {
     if(!isalnum(*ptr) && *ptr != ';' && *ptr != '<') return 0; //Cualquier simbolo que no sea la siguiente definicion o haya terminado
   }
   if(*ptr != ';') return 0;
-  return (nula == 0 && repite == 0); //encontro alguna funcion y cerro >
+  return (nula == 0 && repite == 0); //encontro alguna funcion y cero >
 }
 
 void asignar_input_funcion(char* buffer, Funciones* funciones,Funcion* funcion) {

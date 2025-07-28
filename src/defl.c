@@ -59,7 +59,7 @@ void asignar_input_lista(char* buffer, Lista* lista){
   while (isalnum(*ptr) && i < MAX_NAME - 1) {
     lista->nombre[i++] = *ptr++;
   }
-  lista->nombre[i] = '\0'; // Terminar la cadena
+  lista->nombre[i] = '\0'; 
   // Saltar espacios y '='
   while (isspace(*ptr)) ptr++;
   ptr++;
@@ -77,7 +77,7 @@ void asignar_input_lista(char* buffer, Lista* lista){
     while (isdigit(*ptr) && j < 31) {
       value[j++] = *ptr++;
     }
-    value[j] = '\0'; //Terminar la cadena
+    value[j] = '\0';
 
     lista_agregar_valor(lista, atoi(value)); //Agregar valor a la lista
 

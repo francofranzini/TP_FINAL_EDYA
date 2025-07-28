@@ -131,7 +131,7 @@ void extraer_valores_lista(char* buffer, Lista* lista) {
     while (isdigit(*ptr)) {
       value[j++] = *ptr++;
     }
-    value[j] = '\0'; //Terminar la cadena
+    value[j] = '\0'; 
 
     lista_agregar_valor(lista, atoi(value));
 
