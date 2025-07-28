@@ -128,6 +128,7 @@ void BFS(Funciones* funciones, Lista* entradas[], Lista* salidas[], int N, Funci
   for(int i = 0; !encontrado && i<8; i++){
     while(!encontrado && !cola_funcion_vacia(cola_actual)){
       Funcion* f = cola_funcion_desencolar(cola_actual);
+      strcpy(f->nombre, "f");
       //Creo mi lista temporal para aplicar la funcion
       Lista* lista_temp = lista_crear();
       lista_copiar(entradas[0], lista_temp);
@@ -171,6 +172,7 @@ int prueba_candidata(Funcion* f, Lista* E[], Lista* S[], int N){
     int overflow_aux = 0;
     Lista* lista_temp2 = lista_crear();
     lista_copiar(E[j], lista_temp2);
+    strcpy(lista_temp2->nombre, "temp");
     aplicar_funcion_lista(lista_temp2, f, &overflow_aux);
     if(overflow_aux || !lista_iguales(lista_temp2, S[j])){
       verifica = 0;  

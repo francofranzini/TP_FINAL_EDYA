@@ -3,7 +3,11 @@
 
 int input_es_valido(char* buffer) {
   // Asegurar longitud máxima
-  if (strlen(buffer) >= MAX_INPUT - 1) return 0;
+  if (strlen(buffer) >= MAX_INPUT - 1){
+    limpiar_stdin();
+    return 0;
+  } 
+    
 
   
   char* pto_coma = strchr(buffer, ';');
@@ -34,7 +38,6 @@ Operacion recibir_input(char buffer[]) {
     fgets(buffer, MAX_INPUT, stdin);
     if (!input_es_valido(buffer)) {
       printf("Input inválido. Debe tener hasta 512 caracteres y terminar en ';'\n");
-      limpiar_stdin();
     } else {
       return interpretar_operacion(buffer);
     }

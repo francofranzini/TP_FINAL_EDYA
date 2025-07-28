@@ -64,7 +64,7 @@ void buscar_funcion(char* buffer, Funciones* funciones, Listas* listas){
   Funcion* funcion_buscada = NULL;
   BFS(funciones, entrada, salida, N, &funcion_buscada);
   if(funcion_buscada != NULL){
-    printf("Funcion encontrada: %s\n", funcion_buscada->nombre);
+    printf("Funcion encontrada: \n");
     for(int i = 0; i<funcion_buscada->pasos_cantidad; i++){
       printf("%s ", funcion_buscada->pasos[i]->nombre);
     }

@@ -274,3 +274,56 @@ void cola_funcion_destruir(ColaFuncion* cola){
   free(cola);
 }
 
+void chequear_variables(Listas* listas, Funciones* funciones) {
+  float factor_listas = (float)listas->count / listas->size;
+  if (factor_listas > 0.75) {
+    rehash_listas(listas);
+  }
+
+  float factor_funciones = (float)funciones->count / funciones->size;
+  if (factor_funciones > 0.75) {
+    rehash_funciones(funciones);
+  }
+}
+void rehash_listas(Listas* listas) {
+  int old_size = listas->size;
+  Lista** old_buckets = listas->buckets;
+
+  listas->size = siguiente_primo(listas->size * 2);
+  listas->buckets = malloc(listas->size * sizeof(Lista*));
+  for(int i = 0; i < listas->size; i++) listas->buckets[i] = NULL;
+  listas->count = 0;
+
+  for(int i = 0; i < old_size; i++) {
+    if(old_buckets[i] != NULL)  listas_agregar_lista(listas, old_buckets[i]);
+  }
+  
+  free(old_buckets);
+}
+void rehash_funciones(Funciones* funciones) {
+  int old_size = funciones->size;
+  Funcion** old_buckets = funciones->buckets;
+
+  funciones->size = siguiente_primo(funciones->size * 2);
+  funciones->buckets = malloc(funciones->size * sizeof(Funcion*));
+  for(int i = 0; i < funciones->size; i++) funciones->buckets[i] = NULL;
+  funciones->count = 0;
+
+  for(int i = 0; i < old_size; i++) {
+    if(old_buckets[i] != NULL) {
+      funciones_agregar_funcion(funciones, old_buckets[i]);
+    }
+  }
+  
+  free(old_buckets);
+}
+int siguiente_primo(int n) {
+  while(!es_primo(n)) n++;
+  return n;
+}
+int es_primo(int n) {
+  for (int i = 2; i * i <= n; i++) {
+    if (n % i == 0) return 0;
+  }
+  return 1;
+}

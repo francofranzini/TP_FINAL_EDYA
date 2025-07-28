@@ -25,22 +25,25 @@ void iniciar_programa(Listas* listas, Funciones* funciones) {
       switch(operacion) {
         case DEFL:
           definir_lista(buffer, listas);
-          printf("Cantidad de listas definidas: %i\nFactor de carga: %f\n", listas->count, listas->load_factor);
+          printf("\n");
           break;
         case DEFF:
           definir_funcion(buffer, funciones);
-          printf("Cantidad de funciones definidas: %i\nFactor de carga: %f\n", funciones->count, funciones->load_factor);
+          printf("\n");
           break;
         case APPLY:
           aplicar_funcion(buffer, funciones, listas);
+          printf("\n");
           break;
         case SEARCH:
           buscar_funcion(buffer, funciones, listas);
+          printf("\n");
           break;
         case FINISH:
           printf("Saliendo del programa.\n");
           break;
       }
+      chequear_variables(listas, funciones);
       operacion = recibir_input(buffer);
     }
 }

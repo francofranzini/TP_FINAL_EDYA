@@ -56,6 +56,10 @@ Funcion* cola_funcion_desencolar(ColaFuncion* cola);
 int cola_funcion_vacia(ColaFuncion* cola);
 void cola_funcion_destruir(ColaFuncion* cola);
 
+/*
+  Revisa ambos factores de carga y si es necesario, rehashing.
+*/
+void chequear_variables(Listas* listas, Funciones* funciones);
 
 unsigned KRHash(char* key);
 unsigned Hash2(char* key);
@@ -86,7 +90,8 @@ void lista_recorrer(Lista* lista);
 int lista_iguales(Lista* A, Lista* B);
 
 
-
+int siguiente_primo(int n);
+int es_primo(int n);
 
 
 
