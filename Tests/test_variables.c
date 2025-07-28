@@ -403,7 +403,7 @@ int main() {
 	test_aplicar_funcion_simple();
 	test_aplicar_funcion_repeticion();
 	test_aplicar_funciones_base();
-	// test_lista_copiar();
+	test_lista_copiar();
 
 	//gcc -o test_variables ./test_variables.c ../src/DList/dlist.c ../src/variables.c ../src/operaciones.c ../src/parser.c
 	printf("Todos los tests pasaron correctamente\n");

@@ -41,10 +41,16 @@ void aplicar_funcion(char* buffer, Funciones* funciones, Listas* listas) {
     int idx = listas_buscar_lista(listas, nombre_lista);
     lista_copiar(listas->buckets[idx], lista_temp);
   }
-  aplicar_funcion_lista(lista_temp, funcion);
-  printf("[ ");
-  lista_recorrer(lista_temp);
-  printf("]\n");
+  int overflow = 0;
+  aplicar_funcion_lista(lista_temp, funcion, &overflow);
+  if(overflow) {
+    printf("Error: Se alcanzó el número máximo de iteraciones (%d)\n", MAX_ITER);
+  }
+  else{
+    printf("[ ");
+    lista_recorrer(lista_temp);
+    printf("]\n");
+  }
   lista_destruir(lista_temp);
 
 }

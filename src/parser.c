@@ -1,9 +1,22 @@
 #include "parser.h"
+#define MAX_INPUT 512
 
+int input_es_valido(char* buffer) {
+  // Asegurar longitud máxima
+  if (strlen(buffer) >= MAX_INPUT - 1) return 0;
 
-int validar_largo_input(char *buffer) {
-  int incompleto = strchr(buffer, '\n') != NULL;
-  return incompleto; // Input válido
+  
+  char* pto_coma = strchr(buffer, ';');
+  if (!pto_coma) return 0;
+
+  
+  pto_coma++;
+  while (*pto_coma != '\0') {
+    if (!isspace(*pto_coma)) return 0;
+    pto_coma++;
+  }
+
+  return 1;
 }
 
 void limpiar_stdin() {
@@ -21,6 +34,17 @@ Operacion interpretar_operacion(const char *buffer) {
   if (strncmp(buffer, "search", 6) == 0) return SEARCH;
 
   return FINISH;
+}
+
+Operacion recibir_input(char buffer[]){
+  fgets(buffer, MAX_INPUT, stdin);
+  if(!input_es_valido(buffer)){
+    printf("Input inválido. Debe tener hasta 512 caracteres y terminar en ';'\n");
+    limpiar_stdin();
+    return recibir_input(buffer);
+  }
+  
+  return interpretar_operacion(buffer);
 }
 
 int validar_es_lista(char* ptr){
@@ -58,21 +82,6 @@ int validar_es_lista(char* ptr){
 
   return 1;
 }
-Operacion recibir_input(char buffer[]){
-  fgets(buffer, 512, stdin);
-  if(!validar_largo_input(buffer)) {
-    printf("El input es muy largo. Por favor ingrese menos de 512 caracteres.\n");
-    limpiar_stdin();
-    recibir_input(buffer);
-  }
-  if(buffer[strlen(buffer) - 2] != ';') {
-    printf("El input debe terminar con ';'\n");
-    limpiar_stdin();
-    recibir_input(buffer);
-  }
-  return interpretar_operacion(buffer);
-}
-
 int validar_input_lista(char* buffer) {
 
   char* ptr = buffer;

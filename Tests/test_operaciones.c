@@ -125,6 +125,23 @@ void test_aplicar_funcion() {
   funciones_destruir(funciones);
   listas_destruir(listas);
 }
+void test_aplicar_funcion_overflow() {
+  Funciones* funciones = funciones_crear(101);
+  Listas* listas = listas_crear(101);
+  char buffer[512];
+
+  strcpy(buffer, "deff f1 = Si Si;");
+  definir_funcion(buffer, funciones);
+
+  strcpy(buffer, "deff ferror = <Si Sd>;");
+  definir_funcion(buffer, funciones);
+
+  strcpy(buffer, "apply ferror [1, 3, 6];");
+  aplicar_funcion(buffer, funciones, listas);
+
+  funciones_destruir(funciones);
+  listas_destruir(listas);
+}
 
 
 int main() {
@@ -132,6 +149,8 @@ int main() {
   test_definir_lista_exitosa();
   test_definir_lista_fallido();
   test_aplicar_funcion();
+  test_aplicar_funcion_overflow();
+  // gcc -o test_operaciones ./test_operaciones.c ../src/operaciones.c ../src/variables.c ../src/parser.c ../src/DList/dlist.c
   printf("Todos los tests de definir_lista pasaron correctamente.\n");
   return 0;
 }

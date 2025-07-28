@@ -217,8 +217,9 @@ void funcion_destruir(Funcion* funcion){
   free(funcion);
 }
 
-void aplicar_funcion_lista(Lista* lista, Funcion* funcion){
-  if(es_funcion_base(funcion)) aplicar_funcion_lista_base(lista, funcion);
+void aplicar_funcion_lista(Lista* lista, Funcion* funcion, int* overflow) {
+  if(*overflow == 1) return;
+  if(es_funcion_base(funcion)) return aplicar_funcion_lista_base(lista, funcion);
 
   for(int i = 0; i<funcion->pasos_cantidad;){
     int repite_id = funcion->repite[i];
@@ -231,14 +232,18 @@ void aplicar_funcion_lista(Lista* lista, Funcion* funcion){
       int count = 0;
       while (!termina_repeticion(lista) && count < MAX_ITER) {
         for (int j = i; j < fin; j++) 
-          aplicar_funcion_lista(lista, funcion->pasos[j]);
+          aplicar_funcion_lista(lista, funcion->pasos[j], overflow);
         count++;
       }
-
+      if(count == MAX_ITER){
+        *overflow = 1;
+        return;
+      } 
+        
       i = fin; // Saltar todo el bloque
     }
     else{
-      aplicar_funcion_lista(lista, funcion->pasos[i]);
+      aplicar_funcion_lista(lista, funcion->pasos[i], overflow);
       i++;
     }
   }
